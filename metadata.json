@@ -1,0 +1,6 @@
+{
+  "name": "Power House Gym & Nutrition | Kandari",
+  "description": "Premium aesthetic gym in Kandari, Maharashtra, featuring Hoist & Viva Fitness equipment, professional personal trainers, and personalized nutrition guidance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
