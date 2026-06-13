@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { motion, useAnimation, useScroll, useTransform } from "motion/react";
 import { ChevronDown, Trophy, ShieldCheck, Flame, Star } from "lucide-react";
 import { Stat } from "../types";
+import { smoothScrollTo } from "../utils/scroll";
+import Magnetic from "./Magnetic";
 
 const HERO_STATS: Stat[] = [
-  { label: "Active Members", value: "500", suffix: "+", badge: "Kandari" },
+  { label: "Active Members", value: "500", suffix: "+", badge: "Bhusawal" },
   { label: "Professional Experience", value: "10", suffix: "+ Years", badge: "Expertise" },
   { label: "Member Rating", value: "4.8", suffix: " ★", badge: "Top Tier" },
   { label: "Elite Certifications", value: "Hoist", suffix: "& Viva", badge: "Premium Brands" },
@@ -46,19 +48,15 @@ export default function Hero() {
   const { scrollY } = useScroll();
   const backgroundY = useTransform(scrollY, [0, 800], [0, 240]);
   const opacityFade = useTransform(scrollY, [0, 600], [1, 0.25]);
+  const arrowOpacity = useTransform(scrollY, [0, 80], [1, 0]);
+  const arrowPointerEvents = useTransform(scrollY, (latest) => latest > 70 ? "none" : "auto");
 
   const scrollToContact = () => {
-    const contactSec = document.getElementById("contact");
-    if (contactSec) {
-      contactSec.scrollIntoView({ behavior: "smooth" });
-    }
+    smoothScrollTo("#contact");
   };
 
   const scrollToAbout = () => {
-    const aboutSec = document.getElementById("about");
-    if (aboutSec) {
-      aboutSec.scrollIntoView({ behavior: "smooth" });
-    }
+    smoothScrollTo("#about");
   };
 
   return (
@@ -115,18 +113,23 @@ export default function Hero() {
           </div>
 
           {/* Main heading */}
-          <h1 className="font-bebas text-5xl sm:text-7xl md:text-9xl tracking-tight text-white leading-[0.9] flex flex-col items-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 35 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="font-bebas text-5xl sm:text-7xl md:text-9xl tracking-tight text-white leading-[0.9] flex flex-col items-center"
+          >
             FORGE YOUR
             <span className="relative text-gold uppercase mt-1">
               PHYSIQUE
               <motion.span
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
-                transition={{ delay: 0.6, duration: 1.2, ease: "easeOut" }}
+                transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
                 className="absolute left-0 bottom-1 sm:bottom-2 h-1.5 sm:h-2 bg-gradient-to-r from-gold via-electric-red to-gold rounded-full"
               />
             </span>
-          </h1>
+          </motion.h1>
 
           {/* Subheading */}
           <p className="max-w-xl mx-auto font-sans text-base sm:text-lg text-gray-400 tracking-wider">
@@ -135,24 +138,27 @@ export default function Hero() {
 
           {/* CTAs */}
           <div className="pt-6 flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <motion.button
-              id="hero-free-trial"
-              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(201,168,76,0.3)" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={scrollToContact}
-              className="w-full sm:w-auto px-8 py-4 rounded-full font-sans text-xs uppercase tracking-widest font-bold bg-gold text-[#0A0A0A] cursor-pointer"
-            >
-              Start Free Trial
-            </motion.button>
-            <motion.button
-              id="hero-take-tour"
-              whileHover={{ scale: 1.05, bg: "rgba(255,255,255,0.05)" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={scrollToAbout}
-              className="w-full sm:w-auto px-8 py-4 rounded-full font-sans text-xs uppercase tracking-widest font-bold border border-gold/40 text-gold cursor-pointer"
-            >
-              Take a Tour
-            </motion.button>
+            <Magnetic scaleOnHover={1.06} range={85} strength={0.35}>
+              <motion.button
+                id="hero-free-trial"
+                whileHover={{ boxShadow: "0 0 25px rgba(201,168,76,0.25)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={scrollToContact}
+                className="w-full sm:w-auto px-8 py-4 rounded-full font-sans text-xs uppercase tracking-widest font-bold bg-gold text-[#0A0A0A] cursor-pointer"
+              >
+                Start Free Trial
+              </motion.button>
+            </Magnetic>
+            <Magnetic scaleOnHover={1.06} range={85} strength={0.35}>
+              <motion.button
+                id="hero-take-tour"
+                whileTap={{ scale: 0.95 }}
+                onClick={scrollToAbout}
+                className="w-full sm:w-auto px-8 py-4 rounded-full font-sans text-xs uppercase tracking-widest font-bold border border-gold/45 text-gold bg-transparent hover:bg-white/5 transition-colors cursor-pointer"
+              >
+                Take a Tour
+              </motion.button>
+            </Magnetic>
           </div>
         </motion.div>
       </div>
@@ -189,8 +195,11 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Animated scroll down indicator */}
-      <div className="relative z-10 flex flex-col items-center justify-center mt-8">
+      {/* Animated scroll down indicator that fades out when scrolling */}
+      <motion.div
+        style={{ opacity: arrowOpacity, pointerEvents: arrowPointerEvents }}
+        className="relative z-10 flex flex-col items-center justify-center mt-8"
+      >
         <motion.span
           animate={{ y: [0, 6, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
@@ -200,7 +209,7 @@ export default function Hero() {
           SCROLL TO EXPLORE
           <ChevronDown className="w-4 h-4 text-gold" />
         </motion.span>
-      </div>
+      </motion.div>
     </section>
   );
 }

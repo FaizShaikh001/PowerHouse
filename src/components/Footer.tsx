@@ -1,6 +1,9 @@
 import { Flame, Instagram, Facebook, MessageCircle, ArrowUp, Zap } from "lucide-react";
 import { motion } from "motion/react";
 import { NavLink } from "../types";
+import Logo from "./Logo";
+import { smoothScrollTo } from "../utils/scroll";
+import { useGymData } from "../context/GymDataContext";
 
 const FOOTER_LINKS: NavLink[] = [
   { label: "Home", href: "#home" },
@@ -13,11 +16,10 @@ const FOOTER_LINKS: NavLink[] = [
 ];
 
 export default function Footer() {
+  const { timings } = useGymData();
+
   const scrollTo = (id: string) => {
-    const element = document.getElementById(id.replace("#", ""));
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    smoothScrollTo(id);
   };
 
   return (
@@ -40,22 +42,20 @@ export default function Footer() {
               }}
               className="flex items-center gap-2 group"
             >
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gold/10 border border-gold/30">
-                <Flame className="w-4 h-4 text-gold group-hover:text-electric-red transition-colors" />
-              </div>
+              <Logo className="w-8 h-8 group-hover:scale-105 transition-all duration-300 filter drop-shadow-[0_0_8px_rgba(201,168,76,0.2)]" />
               <span className="font-bebas text-xl sm:text-2xl tracking-wider text-white">
                 POWER <span className="text-gold">HOUSE</span>
               </span>
             </a>
 
             <p className="font-sans text-xs text-gray-400 leading-relaxed max-w-sm">
-              Power House Gym & Nutrition transforms intent into physical excellence in Kandari, Maharashtra. Engineered with world-class Hoist Strength and Viva Cardio assemblies.
+              Power House Gym & Nutrition transforms intent into physical excellence in Bhusawal, Maharashtra. Engineered with world-class Hoist Strength and Viva Cardio assemblies.
             </p>
 
             {/* Social Links */}
             <div className="flex gap-3">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/powerhousegymbhusawal?igsh=NnF1Y2Nob2c4YW4z"
                 id="social-instagram"
                 target="_blank"
                 rel="noreferrer"
@@ -116,8 +116,8 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 font-sans text-xs text-gray-400 leading-relaxed">
               <li>
-                <strong className="text-white block font-medium">Power House Kandari:</strong>
-                Sr. No. 78/1B, Plot No. 10, Yawal Road, Saichandra Nagar, Kandari, Maharashtra 425201
+                <strong className="text-white block font-medium">Power House Bhusawal:</strong>
+                Sr. No. 78/1B, Plot No. 10, Yawal Road, Saichandra Nagar, Bhusawal, Maharashtra 425201
               </li>
               <li>
                 <strong className="text-white block font-medium">Inquiries Phone:</strong>
@@ -125,7 +125,7 @@ export default function Footer() {
               </li>
               <li>
                 <strong className="text-white block font-medium">Closing Schedules:</strong>
-                Fully open Monday through Saturday with air-conditioned comfort. Open daily until 10 PM.
+                Monday to Saturday {timings.weekdays}. {timings.sunday.toLowerCase().includes("closed") ? `Sunday Gym is ${timings.sunday}.` : `Sunday: ${timings.sunday}`}
               </li>
             </ul>
           </div>
@@ -136,7 +136,7 @@ export default function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left space-y-1">
             <p className="text-[11px] font-sans text-gray-500">
-              © 2026 Power House Gym & Nutrition. All rights reserved. Registered Kandari Performance Lab.
+              © 2026 Power House Gym & Nutrition. All rights reserved. Registered Bhusawal Performance Lab.
             </p>
             <p className="text-[9.5px] font-mono text-gray-650 text-gray-600 block">
               Machinery registered trademarks // HOIST Fitness ROC-IT & VIVA High Precision Cardio Group.

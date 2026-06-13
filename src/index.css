@@ -77,3 +77,113 @@
   -webkit-text-stroke: 1px #C9A84C;
   color: transparent;
 }
+
+/* High Contrast Mode Accessibility Overrides */
+.high-contrast p,
+.high-contrast li,
+.high-contrast label {
+  font-weight: 600 !important;
+  color: #FFFFFF !important;
+}
+
+.high-contrast .text-gray-400,
+.high-contrast .text-gray-500,
+.high-contrast .text-stone-400,
+.high-contrast .text-stone-500,
+.high-contrast .text-gray-300 {
+  color: #F1F5F9 !important; /* Increase general description contrast to slate-100 */
+}
+
+.high-contrast .text-gold {
+  color: #FFF380 !important; /* Brighter high legibility light yellow-gold */
+}
+
+.high-contrast .border,
+.high-contrast .border-white\/5,
+.high-contrast .border-white\/10,
+.high-contrast .border-gold\/15,
+.high-contrast .border-gold\/20,
+.high-contrast .border-gold\/30 {
+  border-color: rgba(255, 255, 255, 0.4) !important; /* Amplify borders of cards */
+}
+
+.high-contrast button,
+.high-contrast a {
+  font-weight: 850 !important;
+}
+
+/* Make high contrast buttons stark black text on solid high contrast backgrounds */
+.high-contrast button.bg-gold,
+.high-contrast a.bg-gold {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  border: 3px solid #000000 !important;
+  box-shadow: 0 0 0 2px #FFFFFF !important;
+}
+
+/* Frame form inputs so they are perfectly readable */
+.high-contrast input[type="text"],
+.high-contrast input[type="tel"],
+.high-contrast input[type="email"],
+.high-contrast input[type="number"],
+.high-contrast textarea,
+.high-contrast select {
+  border: 2px solid #FFFFFF !important;
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+/* Enhance structural grid item backgrounds for readability */
+.high-contrast .bg-stone-950,
+.high-contrast .bg-stone-900,
+.high-contrast .bg-stone-900\/60,
+.high-contrast .bg-\[\#0E0E0E\] {
+  background-color: #000000 !important;
+}
+
+/* Dynamic soft golden glow effect to logo spans on hover, gradually intensifying */
+.logo-span-1 {
+  transition: text-shadow 0.4s ease-in-out, filter 0.4s ease-in-out, color 0.4s ease-in-out !important;
+}
+#nav-logo:hover .logo-span-1,
+.logo-span-1:hover {
+  text-shadow: 0 0 12px rgba(201, 168, 76, 0.82), 0 0 24px rgba(201, 168, 76, 0.4) !important;
+}
+
+.logo-span-2 {
+  transition: text-shadow 0.4s ease-in-out, filter 0.4s ease-in-out, color 0.4s ease-in-out !important;
+}
+#nav-logo:hover .logo-span-2,
+.logo-span-2:hover {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Nav links soft golden glow transition on hover */
+.nav-glow-link {
+  transition: text-shadow 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.3s ease-in-out !important;
+}
+.nav-glow-link:hover {
+  color: #C9A84C !important;
+  text-shadow: 0 0 8px rgba(201, 168, 76, 0.7), 0 0 16px rgba(201, 168, 76, 0.3) !important;
+}
+
+/* Subtle gold border glow pulsing animation for featured staff cards */
+@keyframes borderGlowPulse {
+  0% {
+    border-color: rgba(201, 168, 76, 0.12);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7), 0 0 15px rgba(201, 168, 76, 0.08);
+  }
+  50% {
+    border-color: rgba(201, 168, 76, 0.38);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7), 0 0 30px rgba(201, 168, 76, 0.28);
+  }
+  100% {
+    border-color: rgba(201, 168, 76, 0.12);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7), 0 0 15px rgba(201, 168, 76, 0.08);
+  }
+}
+
+.animate-glow-pulse {
+  animation: borderGlowPulse 4.5s infinite ease-in-out;
+}

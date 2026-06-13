@@ -23,6 +23,7 @@ export interface EquipmentItem {
   category: string;
   iconName: string;
   benefit: string;
+  imageUrl?: string;
 }
 
 export interface Trainer {
@@ -31,6 +32,7 @@ export interface Trainer {
   experience: string;
   specialty: string[];
   certifications: string[];
+  instagram?: string;
 }
 
 export interface Testimonial {

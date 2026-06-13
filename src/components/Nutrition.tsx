@@ -20,7 +20,7 @@ const NUTRITION_COLS: NutritionCol[] = [
       "Individual metabolic rate (BMR) calculations",
       "Macro nutrient target allocation based on hypertrophy vs recovery",
       "Delicious high-protein food alternative matrix lists",
-      "Kandari local market ingredient adaptability options"
+      "Bhusawal local market ingredient adaptability options"
     ],
     quote: "A precise, balanced calorie deficit or surplus is the supreme catalyst of physical form.",
     accent: "group-hover:border-gold/30 hover:shadow-gold/10"
@@ -90,7 +90,13 @@ export default function Nutrition() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center space-y-4 mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center space-y-4 mb-20"
+        >
           <span className="text-xs font-mono tracking-widest text-gold uppercase block">
             [ METABOLIC OPTIMIZATION SYSTEM ]
           </span>
@@ -101,7 +107,7 @@ export default function Nutrition() {
           <p className="max-w-xl mx-auto font-sans text-xs sm:text-sm text-gray-400 tracking-wider">
             Muscles are built in the gym, but forged in the kitchen. Our specialized coaches supply nutrition design structures synchronized with your hoisting metrics.
           </p>
-        </div>
+        </motion.div>
 
         {/* Nutritional Steps / Horizontal Ribbon (Unsolicited systems removed, keeping it simple as requested) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8" id="nutrition-columns-grid">

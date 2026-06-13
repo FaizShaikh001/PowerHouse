@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { MapPin, Phone, Clock, Star, Send, ShieldCheck, Mail, Ticket, CheckCircle2, MessageSquare, Flame } from "lucide-react";
 import { ContactFormInput } from "../types";
+import Magnetic from "./Magnetic";
+import { useGymData } from "../context/GymDataContext";
 
 export default function Contact() {
+  const { timings } = useGymData();
   const [formData, setFormData] = useState<ContactFormInput>({
     name: "",
     phone: "",
@@ -78,7 +81,13 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Section Header */}
-        <div className="text-center space-y-4 mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center space-y-4 mb-16"
+        >
           <span className="text-xs font-mono tracking-widest text-gold uppercase block">
             [ LOCATE AND DEPLOY YOURSELF ]
           </span>
@@ -87,9 +96,9 @@ export default function Contact() {
           </h2>
           <div className="h-1 w-24 bg-electric-red mx-auto" />
           <p className="max-w-xl mx-auto font-sans text-xs sm:text-sm text-gray-400 tracking-wider">
-            Fill out the form below to immediately construct your professional 1-day entry ticket pass and trigger a notification log to the owner at 07757077393.
+            Fill out the form below to immediately construct your professional 1-day complimentary entry pass. Subsequent single sessions can be continued at just <strong className="text-gold">₹100/- per session</strong>!
           </p>
-        </div>
+        </motion.div>
 
         {/* Form and Details Layout split columns */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
@@ -162,43 +171,74 @@ export default function Contact() {
                         ✂-------------------------------------------
                       </div>
 
-                      <div className="space-y-1 bg-[#0A0A0A] p-2.5 rounded-lg border border-white/5">
-                        <span className="text-[9px] font-mono text-gold uppercase block tracking-wider">AUTHORIZED ACCESS</span>
+                      <div className="space-y-1.5 bg-[#0A0A0A] p-3 rounded-lg border border-white/5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[9px] font-mono text-gold uppercase block tracking-wider">AUTHORIZED ACCESS</span>
+                          <span className="text-[10px] font-mono font-bold text-white bg-gold/20 px-1.5 py-0.5 rounded border border-gold/30">₹100/Session Next</span>
+                        </div>
                         <p className="text-[10px] text-gray-400 leading-relaxed">
-                          Valid for 1 complete session including full Hoist Resistance Circuit usage & bio-mechanical alignment check from Sachin.
+                          Valid for 1 complete complimentary trial session. Extend training anytime afterward at just <strong className="text-white">₹100/- per session</strong> with certified biomechanics coach Sachin Patil.
                         </p>
                       </div>
                     </div>
                   </div>
 
                   {/* Transmission logs / action buttons */}
-                  <div className="space-y-3 bg-stone-950/80 p-4 rounded-xl border border-white/5">
-                    <span className="text-[9px] font-mono text-gray-400 uppercase tracking-widest block">
-                      // OWNER DISPATCH CHANNEL VERIFICATION
-                    </span>
+                  <div className="space-y-4 bg-stone-950/80 p-4 rounded-xl border border-white/5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-mono text-gray-400 uppercase tracking-widest block">
+                        // DISPATCH CHANNELS & NOTIFICATION
+                      </span>
+                      <span className="animate-pulse flex h-2 w-2 rounded-full bg-emerald-500" />
+                    </div>
                     <p className="text-[10px] text-gray-300 leading-relaxed">
-                      A text notification containing your Pass Code <strong className="text-gold">{generatedPass.code}</strong> and phone details has been simulated and sent to Gym Owner on <strong className="text-white">07757077393</strong>.
+                      A premium pass credential has been registered in the system cache! Please select <strong>Send Pass via Gmail</strong> below to automatically transmit your ticket details directly to our central registry at <strong className="text-gold">power.housefns@gmail.com</strong> for fast activation.
                     </p>
-                    <div className="h-px bg-white/5 my-2" />
                     
-                    {/* Real instant actions to send directly via whatsapp/SMS for complete validity */}
-                    <div className="flex flex-wrap gap-2 pt-1">
+                    {/* Primary Gmail dispatch container */}
+                    <div className="space-y-2 pt-1">
                       <a
-                        href={`https://api.whatsapp.com/send?phone=917757077393&text=Hi%20Power%20House%20Gym%21%20I%20have%20registered%20for%20my%20Professional%20One%20Day%20Pass%2E%0AName%3A%20${encodeURIComponent(generatedPass.name)}%0APhone%3A%20${encodeURIComponent(generatedPass.phone)}%0APass%20Code%3A%20${generatedPass.code}%0AAuthorized%20on%3A%20${encodeURIComponent(generatedPass.dateStr)}%0ASee%20you%20soon%21`}
+                        href={`https://mail.google.com/mail/?view=cm&fs=1&to=power.housefns@gmail.com&su=Power%20House%20Gym%20-%20One%20Day%20Pass%3A%20${encodeURIComponent(generatedPass.name)}&body=Dear%20Power%20House%20Gym%20Team%2C%0A%0AI%20have%20generated%20a%201-day%20pass%20on%20your%20website%20diagnostics%20panel%2E%20Please%20find%20my%20membership%20pass%20details%20below%3A%0A%0A-%20Name%3A%20${encodeURIComponent(generatedPass.name)}%0A-%20Phone%3A%20${encodeURIComponent(generatedPass.phone)}%0A-%20Pass%20Code%3A%20${generatedPass.code}%0A-%20Authorized%20on%3A%20${encodeURIComponent(generatedPass.dateStr)}%0A-%20My%20Message/Goals%3A%20${encodeURIComponent(generatedPass.message || "Complimentary strength consultation")}%0A%0AI%20would%20like%20to%20confirm%20my%20scheduled%20session%20and%20coordinate%20with%20Coach%20Sachin%20Patil%2E%20Thank%20you%20very%20much%21`}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-green-950 border border-green-700/50 hover:bg-green-900 text-[10px] font-mono text-green-300 font-bold transition-all"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-[11px] font-sans font-black text-white uppercase tracking-widest transition-all duration-300 shadow-md shadow-red-950/25 cursor-pointer text-center"
                       >
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        Send WhatsApp text to Owner
+                        <Mail className="w-4 h-4 text-white shrink-0" />
+                        Send Pass via Gmail (Web/App)
                       </a>
+
                       <a
-                        href={`sms:+917757077393?body=Hi+Power+House+Gym!+My+One+Day+Pass+Code+is+${generatedPass.code}.+Name:+${encodeURIComponent(generatedPass.name)}.+Phone:+${encodeURIComponent(generatedPass.phone)}.`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-blue-950 border border-blue-700/50 hover:bg-blue-900 text-[10px] font-mono text-blue-300 font-bold transition-all"
+                        href={`mailto:power.housefns@gmail.com?subject=Power%20House%20Gym%20-%20One%20Day%20Pass%3A%20${encodeURIComponent(generatedPass.name)}&body=Dear%20Power%20House%20Gym%20Team%2C%0A%0AI%20have%20generated%20a%201-day%20pass%20on%20your%20website%20diagnostics%20panel%2E%20Please%20find%20my%20membership%20pass%20details%20below%3A%0A%0A-%20Name%3A%20${encodeURIComponent(generatedPass.name)}%0A-%20Phone%3A%20${encodeURIComponent(generatedPass.phone)}%0A-%20Pass%20Code%3A%20${generatedPass.code}%0A-%20Authorized%20on%3A%20${encodeURIComponent(generatedPass.dateStr)}%0A-%20My%20Message/Goals%3A%20${encodeURIComponent(generatedPass.message || "Complimentary strength consultation")}%0A%0AI%20would%20like%20to%20confirm%20my%20scheduled%20session%20and%20coordinate%20with%20Coach%20Sachin%20Patil%2E%20Thank%20you%21`}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-stone-900 border border-white/10 hover:bg-stone-850 hover:text-white text-[10px] font-mono text-gray-300 transition-all duration-300 cursor-pointer text-center"
                       >
-                        <Phone className="w-3" />
-                        Send SMS link
+                        <Mail className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                        Send via default mail Client
                       </a>
+                    </div>
+
+                    <div className="h-px bg-white/5 my-1" />
+                    
+                    {/* Alternative active message formats */}
+                    <div className="space-y-1.5 font-mono text-[9px] text-gray-500">
+                      <span className="block">ALTERNATIVE DISPATCH ROUTES (Direct & Instant):</span>
+                      <div className="flex flex-wrap gap-2">
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=917757077393&text=Hi%20Power%20House%20Gym%21%20I%20have%20registered%20for%20my%20Professional%20One%20Day%20Pass%2E%0AName%3A%20${encodeURIComponent(generatedPass.name)}%0APhone%3A%20${encodeURIComponent(generatedPass.phone)}%0APass%20Code%3A%20${generatedPass.code}%0AAuthorized%20on%3A%20${encodeURIComponent(generatedPass.dateStr)}%0ASee%20you%20soon%21`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-green-950/40 border border-green-800/30 hover:bg-green-950 text-[10px] font-mono text-green-300 font-bold transition-all"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                          WhatsApp Gym Owner
+                        </a>
+                        <a
+                          href={`sms:+917757077393?body=Hi+Power+House+Gym!+My+One+Day+Pass+Code+is+${generatedPass.code}.+Name:+${encodeURIComponent(generatedPass.name)}.+Phone:+${encodeURIComponent(generatedPass.phone)}.`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-blue-950/40 border border-blue-800/30 hover:bg-blue-950 text-[10px] font-mono text-blue-300 font-bold transition-all"
+                        >
+                          <Phone className="w-3" />
+                          Send SMS
+                        </a>
+                      </div>
                     </div>
                   </div>
 
@@ -211,12 +251,18 @@ export default function Contact() {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6" id="contact-form">
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     <h3 className="font-bebas text-3xl text-white tracking-wide">
-                      GET A 1-DAY PASS
+                      GET A 1-DAY TRIAL PASS
                     </h3>
-                    <p className="font-sans text-xs text-gray-400">
-                      Take a free pass to experience the biomechanics of our Hoist & Viva equipment.
+                    <div className="flex items-center gap-2 bg-gold/10 border border-gold/20 py-1.5 px-3 rounded-lg my-1">
+                      <Flame className="w-3.5 h-3.5 text-gold animate-pulse shrink-0" />
+                      <p className="font-sans text-[11px] font-bold text-gray-200">
+                        ₹100/- per session after 1 day trial period has ended!
+                      </p>
+                    </div>
+                    <p className="font-sans text-xs text-gray-400 leading-relaxed">
+                      Experience the advanced ergonomic alignment of our specialized Hoist & Viva equipment for absolutely free today. Subsequent visits are only ₹100/- per individual entry.
                     </p>
                   </div>
 
@@ -277,15 +323,17 @@ export default function Contact() {
                   </div>
 
                   {/* Submit CTA */}
-                  <button
-                    id="contact-form-submit"
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-gold text-[#0A0A0A] hover:bg-gold-light focus:outline-none focus:ring-2 focus:ring-gold/50 shadow-lg shadow-gold/10 hover:shadow-gold/30 transition-all duration-300 disabled:opacity-50 cursor-pointer"
-                  >
-                    <span>{isSubmitting ? "TRANSMITTING..." : "SUBMIT APPLICATION"}</span>
-                    <Send className="w-4 h-4 ml-1" />
-                  </button>
+                  <Magnetic scaleOnHover={1.03} range={65} strength={0.25}>
+                    <button
+                      id="contact-form-submit"
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-gold text-[#0A0A0A] hover:bg-gold-light focus:outline-none focus:ring-2 focus:ring-gold/50 shadow-lg shadow-gold/10 hover:shadow-gold/30 transition-all duration-300 disabled:opacity-50 cursor-pointer animate-none"
+                    >
+                      <span>{isSubmitting ? "TRANSMITTING..." : "SUBMIT APPLICATION"}</span>
+                      <Send className="w-4 h-4 ml-1" />
+                    </button>
+                  </Magnetic>
                 </form>
               )}
             </motion.div>
@@ -317,7 +365,7 @@ export default function Contact() {
                       LOCATION
                     </span>
                     <p className="font-sans text-xs text-gray-300 leading-relaxed sm:text-xs">
-                      Sr. No. 78/1B, Plot No. 10, Yawal Road, behind Navjeevan Furniture Mall, Saichandra Nagar, Shanti Nagar, Kandari, Maharashtra 425201
+                      Sr. No. 78/1B, Plot No. 10, Yawal Road, behind Navjeevan Furniture Mall, Saichandra Nagar, Shanti Nagar, Bhusawal, Maharashtra 425201
                     </p>
                   </div>
                 </div>
@@ -351,10 +399,13 @@ export default function Contact() {
                     </span>
                     <div className="font-sans text-xs text-gray-300 space-y-1">
                       <p>
-                        Mon - Sat: <strong className="text-white">5:00 AM - 10:00 PM</strong>
+                        Mon - Sat: <strong className="text-white">{timings.weekdays}</strong>
                       </p>
                       <p>
-                        Women's Exclusive: <strong className="text-pink-400">3:00 PM - 5:00 PM</strong>
+                        Sunday: <strong className={timings.sunday.toLowerCase().includes("closed") ? "text-electric-red" : "text-white"}>{timings.sunday}</strong>
+                      </p>
+                      <p>
+                        Women's Exclusive: <strong className="text-pink-400">{timings.womenExclusive}</strong>
                       </p>
                       <p>
                         <strong className="text-gold font-medium">❄️ Fully Air Conditioned Space</strong>
@@ -386,7 +437,7 @@ export default function Contact() {
               {/* Embedded Responsive Google Map */}
               <div className="rounded-2xl overflow-hidden border border-white/5 shadow-2xl h-64 sm:h-80 relative bg-zinc-950">
                 <iframe
-                  title="Power House Gym & Nutrition Kandari location map"
+                  title="Power House Gym & Nutrition Bhusawal location map"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.3619565578713!2d75.7796175!3d21.0613715!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd9a7887759fbb9%3A0x7c75426ad581e627!2sPower%20House%20Gym%20and%20nutrition!5e0!3m2!1sen!2sin!4v1716700000000!5m2!1sen!2sin"
                   width="100%"
                   height="100%"
@@ -396,6 +447,10 @@ export default function Contact() {
                   referrerPolicy="no-referrer-when-downgrade"
                   className="grayscale invert opacity-80 contrast-125 saturate-50"
                 />
+                {/* Subtle gold-tinted transparent gradient overlays to integrate with dark/gold theme */}
+                <div className="absolute inset-0 bg-gradient-to-t from-gold/10 via-transparent to-black/50 pointer-events-none mix-blend-color" />
+                <div className="absolute inset-0 bg-radial-at-c from-transparent via-transparent to-black/50 pointer-events-none" />
+                <div className="absolute inset-0 border border-gold/10 rounded-2xl pointer-events-none" />
               </div>
 
             </motion.div>

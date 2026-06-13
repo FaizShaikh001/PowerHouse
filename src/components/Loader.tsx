@@ -85,7 +85,7 @@ export default function Loader({ onComplete }: { onComplete: () => void; key?: R
             POWER <span className="text-gold">HOUSE</span>
           </h2>
           <span className="text-[10px] font-mono tracking-[0.3em] text-gray-500 uppercase block">
-            Kandari Performance Lab
+            Bhusawal Performance Lab
           </span>
         </div>
 

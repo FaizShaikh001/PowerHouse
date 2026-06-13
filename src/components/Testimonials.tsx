@@ -7,7 +7,7 @@ const TESTIMONIALS: Testimonial[] = [
   {
     name: "Abhishek Patil",
     rating: 5,
-    quote: "Power House machines are completely unique. I lost 18kg of fat and built deep cosmetic definition using Coach Sameer's cardio protocols and macro schedules. Best gym in the Shanti Nagar and Kandari areas.",
+    quote: "Power House machines are completely unique. I lost 18kg of fat and built deep cosmetic definition using Coach Sameer's cardio protocols and macro schedules. Best gym in the Shanti Nagar and Bhusawal areas.",
     achievement: "Lost 18kg & Built Aesthetics"
   },
   {
@@ -67,7 +67,13 @@ export default function Testimonials() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center space-y-4 mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center space-y-4 mb-16"
+        >
           <span className="text-xs font-mono tracking-widest text-gold uppercase block">
             [ VERIFIED TRANSFORMATIONS ]
           </span>
@@ -75,7 +81,7 @@ export default function Testimonials() {
             MEMBER <span className="text-gold">REVIEWS</span>
           </h2>
           <div className="h-1 w-24 bg-electric-red mx-auto" />
-        </div>
+        </motion.div>
 
         {/* Testimonials Carousel Slider Box */}
         <div className="relative min-h-[350px] sm:min-h-[280px] flex items-center justify-center">

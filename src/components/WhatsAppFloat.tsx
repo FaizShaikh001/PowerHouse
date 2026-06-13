@@ -4,7 +4,7 @@ import { MessageSquare, Calendar, X, ArrowUpRight } from "lucide-react";
 
 export default function WhatsAppFloat() {
   const [isOpen, setIsOpen] = useState(false);
-  const phoneNumber = "917757077393"; // Direct Indian format for local Kandari audience context
+  const phoneNumber = "917757077393"; // Direct Indian format for local Bhusawal audience context
   const textMessage = "Hi Power House! I would like to schedule an introductory session and inquire about your premier membership programs.";
   const encodedMsg = encodeURIComponent(textMessage);
   const waUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`;
