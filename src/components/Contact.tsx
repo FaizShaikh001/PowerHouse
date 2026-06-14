@@ -4,6 +4,7 @@ import { MapPin, Phone, Clock, Star, Send, ShieldCheck, Mail, Ticket, CheckCircl
 import { ContactFormInput } from "../types";
 import Magnetic from "./Magnetic";
 import { useGymData } from "../context/GymDataContext";
+import { getViewportMargin } from "../utils/scroll";
 
 export default function Contact() {
   const { timings } = useGymData();
@@ -84,7 +85,7 @@ export default function Contact() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: getViewportMargin() }}
           transition={{ duration: 0.6 }}
           className="text-center space-y-4 mb-16"
         >

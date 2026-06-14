@@ -59,3 +59,13 @@ function animateScroll(targetY: number, duration: number) {
 
   requestAnimationFrame(step);
 }
+
+/**
+ * Responsive Viewport Margin Helper
+ * Disables large negative margins on mobile (screen width < 768px)
+ * to ensure that scroll-triggered animations compile and run perfectly without being stuck off-screen on iOS and Android.
+ */
+export function getViewportMargin(desktopMargin: string = "-100px", mobileMargin: string = "-15px"): string {
+  if (typeof window === "undefined") return desktopMargin;
+  return window.innerWidth < 768 ? mobileMargin : desktopMargin;
+}

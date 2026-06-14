@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { ShieldCheck } from "lucide-react";
-import { smoothScrollTo } from "../utils/scroll";
+import { smoothScrollTo, getViewportMargin } from "../utils/scroll";
 import { ScrollStaggerContainer, ScrollStaggerItem } from "./ScrollReveal";
 import { useGymData } from "../context/GymDataContext";
 import PricingCard from "./PricingCard";
@@ -32,7 +32,7 @@ export default function Pricing() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: getViewportMargin() }}
           transition={{ duration: 0.6 }}
           className="text-center space-y-4 mb-20"
         >

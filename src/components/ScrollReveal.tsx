@@ -26,6 +26,10 @@ export default function ScrollReveal({
   // Ultra-premium cubic bezier curve similar to high-end luxury consumer gear/creative agency sites
   const premiumEase = [0.16, 1, 0.3, 1]; // custom easeOutExpo
 
+  // On smaller mobile and phone viewports, avoid aggressive negative offsets which might prevent elements from triggering
+  const isMobileSize = typeof window !== "undefined" && window.innerWidth < 768;
+  const computedMargin = isMobileSize ? "-15px" : margin;
+
   const variants = {
     "fade-up": {
       initial: { opacity: 0, y: 50 },
@@ -59,7 +63,7 @@ export default function ScrollReveal({
     <motion.div
       initial={selectedVariants.initial}
       whileInView={selectedVariants.animate}
-      viewport={{ once, amount: threshold, margin }}
+      viewport={{ once, amount: threshold, margin: computedMargin }}
       transition={{
         duration,
         delay,

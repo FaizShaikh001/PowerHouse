@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Dumbbell, ShieldCheck, Trophy, ArrowUpRight, Star, Instagram, Camera, Scissors, Check, X, ZoomIn } from "lucide-react";
 import { Trainer } from "../types";
-import { smoothScrollTo } from "../utils/scroll";
+import { smoothScrollTo, getViewportMargin } from "../utils/scroll";
 import { SACHIN_BICEPS_IMAGE } from "./SachinImage";
 import { useGymData } from "../context/GymDataContext";
 
@@ -186,7 +186,7 @@ export default function Trainers() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: getViewportMargin() }}
           transition={{ duration: 0.6 }}
           className="text-center space-y-4 mb-16"
         >

@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { CheckCircle2, Trophy, Flame, ShieldAlert, Sparkles, Star } from "lucide-react";
 import { ScrollStaggerContainer, ScrollStaggerItem } from "./ScrollReveal";
+import { getViewportMargin } from "../utils/scroll";
 
 interface FeatureBlock {
   num: string;
@@ -54,7 +55,7 @@ export default function WhyUs() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: getViewportMargin() }}
           transition={{ duration: 0.6 }}
           className="text-center space-y-4 mb-16"
         >

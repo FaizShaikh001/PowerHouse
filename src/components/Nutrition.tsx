@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Apple, Scale, GlassWater, Sparkles, Flame, CheckCircle2 } from "lucide-react";
+import { getViewportMargin } from "../utils/scroll";
 
 interface NutritionCol {
   topic: string;
@@ -93,7 +94,7 @@ export default function Nutrition() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: getViewportMargin() }}
           transition={{ duration: 0.6 }}
           className="text-center space-y-4 mb-20"
         >
@@ -118,7 +119,7 @@ export default function Nutrition() {
                 key={col.title}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: true, margin: getViewportMargin() }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
                 className="flex flex-col justify-between p-8 rounded-3xl bg-gradient-to-b from-[#111] to-[#0A0A0A] border border-white/5 transition-all duration-300 group hover:border-gold/25"
               >

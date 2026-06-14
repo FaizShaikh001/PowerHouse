@@ -30,6 +30,20 @@ export default function Magnetic({
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!ref.current) return;
     
+    // Check if on a mobile/touch device or narrow viewport
+    const isMobile = typeof window !== "undefined" && (
+      window.innerWidth < 768 || 
+      "ontouchstart" in window || 
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 0)
+    );
+
+    if (isMobile) {
+      x.set(0);
+      y.set(0);
+      scale.set(1);
+      return;
+    }
+    
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;

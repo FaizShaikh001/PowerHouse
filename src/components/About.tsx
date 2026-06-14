@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Dumbbell, Trophy, Apple, Clock, ShieldAlert, Star } from "lucide-react";
 import { ScrollStaggerContainer, ScrollStaggerItem } from "./ScrollReveal";
 import { useGymData } from "../context/GymDataContext";
+import { getViewportMargin } from "../utils/scroll";
 
 export default function About() {
   const { timings } = useGymData();
@@ -47,7 +48,7 @@ export default function About() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: getViewportMargin() }}
             transition={{ duration: 0.6 }}
             className="lg:col-span-5 space-y-6"
           >
