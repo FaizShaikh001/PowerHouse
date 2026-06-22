@@ -242,32 +242,29 @@ export default function Trainers() {
         <div className="flex justify-center [perspective:1000px]" id="trainers-cards-grid">
           {isSectionLoading ? (
             // 1. PREMIUM SKELETON LOADER CARD
-            <div className="w-full max-w-2xl relative flex flex-col justify-between rounded-3xl bg-gradient-to-b from-[#111] to-[#161616] border-2 border-white/5 p-8 sm:p-10 shadow-2xl animate-pulse h-[530px] overflow-hidden">
+            <div className="w-full max-w-4xl relative grid grid-cols-1 md:grid-cols-12 gap-8 rounded-3xl bg-gradient-to-b from-[#111] to-[#161616] border border-white/5 p-6 sm:p-8 md:p-10 shadow-2xl animate-pulse overflow-hidden">
+              {/* Left Portrait Column Skeleton */}
+              <div className="md:col-span-5 flex justify-center items-center">
+                <div className="w-full aspect-[4/5] max-w-[320px] rounded-2xl bg-stone-900 border-2 border-stone-800 relative overflow-hidden flex items-center justify-center shrink-0">
+                  <div className="absolute inset-x-0 h-full bg-gradient-to-r from-transparent via-stone-800 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]" />
+                  <Dumbbell className="w-8 h-8 text-stone-700" />
+                </div>
+              </div>
               
-              {/* Header block Skeleton */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
-                <div className="flex items-center gap-5">
-                  {/* Avatar box loader */}
-                  <div className="w-24 h-24 rounded-2xl bg-stone-900 border-2 border-stone-800 relative overflow-hidden flex items-center justify-center shrink-0">
-                    <div className="absolute inset-x-0 h-full bg-gradient-to-r from-transparent via-stone-800 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]" />
-                    <Dumbbell className="w-6 h-6 text-stone-700" />
-                  </div>
-                  
-                  {/* Name and Title labels */}
-                  <div className="space-y-3">
-                    <div className="h-7 w-48 bg-stone-900 rounded-md" />
-                    <div className="h-4 w-60 bg-stone-900/60 rounded-md" />
+              {/* Right Details Column Skeleton */}
+              <div className="md:col-span-7 flex flex-col justify-between space-y-6">
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
+                    <div className="space-y-3">
+                      <div className="h-8 w-48 bg-stone-900 rounded-md" />
+                      <div className="h-4 w-36 bg-stone-900/60 rounded-md" />
+                    </div>
+                    <div className="h-8 w-32 bg-stone-900 rounded-md" />
                   </div>
                 </div>
 
-                {/* Experience Badge Skeleton */}
-                <div className="h-8 w-32 bg-stone-900 rounded-md" />
-              </div>
-
-              {/* Specialties & Credentials Lists Skeletons */}
-              <div className="space-y-6 flex-grow">
                 {/* Specialties */}
-                <div className="space-y-3.5">
+                <div className="space-y-3">
                   <div className="h-3 w-44 bg-stone-900/40 rounded-sm" />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {Array.from({ length: 4 }).map((_, i) => (
@@ -279,7 +276,7 @@ export default function Trainers() {
                   </div>
                 </div>
 
-                {/* Board Credentials */}
+                {/* Credentials */}
                 <div className="space-y-3">
                   <div className="h-3 w-32 bg-stone-900/40 rounded-sm" />
                   <div className="flex flex-wrap gap-2">
@@ -288,12 +285,12 @@ export default function Trainers() {
                     ))}
                   </div>
                 </div>
-              </div>
 
-              {/* Bottom CTAs Skeleton */}
-              <div className="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row gap-3">
-                <div className="h-14 flex-grow bg-stone-900 rounded-xl" />
-                <div className="h-14 w-40 bg-stone-900 rounded-xl" />
+                {/* Button Skeleton */}
+                <div className="pt-4 border-t border-white/5 flex gap-3">
+                  <div className="h-12 flex-grow bg-stone-900 rounded-xl" />
+                  <div className="h-12 w-32 bg-stone-900 rounded-xl" />
+                </div>
               </div>
               
               {/* Subtle shining light stream inside skeleton */}
@@ -309,20 +306,15 @@ export default function Trainers() {
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  whileHover={{ 
-                    scale: 1.025, 
-                    rotateX: 1, 
-                    rotateY: -1, 
-                    borderColor: "rgba(201, 168, 76, 0.5)",
-                    boxShadow: "0 25px 50px -12px rgba(201,168,76,0.25)"
-                  }}
                   transition={{ 
                     type: "spring", 
                     stiffness: 260, 
                     damping: 25 
                   }}
-                  className="w-full max-w-2xl relative flex flex-col justify-between group overflow-hidden rounded-3xl bg-gradient-to-b from-[#111] to-[#1A1A1A] border-2 border-white/5 p-8 sm:p-10 pt-16 transition-colors duration-500 shadow-2xl hover:border-gold/30 animate-glow-pulse"
+                  className="w-full max-w-4xl relative grid grid-cols-1 md:grid-cols-12 gap-8 group overflow-hidden rounded-3xl bg-gradient-to-b from-[#111] to-[#1A1A1A] border border-white/5 p-6 sm:p-8 md:p-10 transition-colors duration-500 shadow-2xl hover:border-gold/30 animate-glow-pulse gold-radial-border"
                 >
+                  {/* Subtle periodic golden shine background pulse layer (triggers every 5s) */}
+                  <div className="bg-gold-shine-pulse" />
                   {/* Admin Strategic Override Header */}
                   {isAdmin && (
                     <div className="absolute top-0 inset-x-0 bg-gold/10 border-b border-gold/15 py-2.5 px-6 flex items-center justify-between z-30" id="trainer-admin-banner">
@@ -353,176 +345,149 @@ export default function Trainers() {
                     </div>
                   )}
 
-                  {/* Visual Header block containing loaded-state profile avatar */}
-                  <div className="relative mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 z-10">
-                    <div className="flex items-center gap-5">
+                  {/* Left Column: Premium Framed Portrait */}
+                  <div className="md:col-span-5 flex flex-col justify-center items-center relative z-10">
+                    <div className="relative w-full aspect-[4/5] max-w-[320px] rounded-2xl bg-[#111] border border-gold/20 group-hover:border-gold/50 transition-all duration-500 overflow-hidden shadow-2xl shadow-[0_0_30px_rgba(201,168,76,0.15)] flex items-center justify-center">
                       
-                      {/* Primary Avatar container with active uploader action when admin session is online */}
-                      <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-[#111] border-2 border-gold/20 group-hover:border-gold/60 transition-all duration-500 overflow-hidden shadow-inner shrink-0 shadow-[0_0_20px_rgba(201,168,76,0.1)]">
-                        
-                        {/* Avatar Shimmer Skeleton Loader */}
-                        {!isAvatarLoaded && (
-                          <div className="absolute inset-0 bg-stone-900 flex items-center justify-center">
-                            <div className="absolute inset-x-0 h-full bg-gradient-to-r from-transparent via-stone-800 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]" />
-                            <Dumbbell className="w-5 h-5 text-stone-700 animate-pulse" />
-                          </div>
-                        )}
-
-                        <img 
-                          src={coachPhoto}
-                          alt="Sachin Patil Flexing profile"
-                          referrerPolicy="no-referrer"
-                          onLoad={() => setIsAvatarLoaded(true)}
-                          className={`w-full h-full object-cover group-hover:scale-110 transition-all duration-700 select-none filter brightness-105 contrast-105 ${
-                            isAvatarLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                          }`}
-                        />
-                        
-                        {/* Dynamic hover overlay if isAdmin is active */}
-                        {isAdmin && (
-                          <div 
-                            onClick={triggerFileSelect}
-                            className="absolute inset-0 bg-black/80 hover:bg-black/60 flex flex-col items-center justify-center cursor-pointer transition-all z-20 group/edit"
-                            title="Click to Choose Custom Image & Crop"
-                          >
-                            <Camera className="w-5 h-5 text-gold group-hover/edit:scale-110 transition-transform" />
-                            <span className="text-[7px] font-mono tracking-widest text-[#FFF] uppercase mt-1 text-center px-1 font-black leading-tight">
-                              CHANGE IMAGE
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Abstract badge details */}
-                        <div className="absolute right-0 bottom-0 w-8 h-8 bg-[#0A0A0A]/85 flex items-center justify-center rounded-tl-xl border-l border-t border-gold/20 backdrop-blur-sm z-10">
-                          <Star className="w-3 h-3 text-gold" />
+                      {/* Avatar Shimmer Skeleton Loader */}
+                      {!isAvatarLoaded && (
+                        <div className="absolute inset-0 bg-stone-900 flex items-center justify-center">
+                          <div className="absolute inset-x-0 h-full bg-gradient-to-r from-transparent via-stone-800 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]" />
+                          <Dumbbell className="w-8 h-8 text-stone-700 animate-pulse" />
                         </div>
-                      </div>
-                      
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bebas text-3xl sm:text-4xl text-white tracking-wide group-hover:text-gold transition-all duration-300 ease-in-out uppercase">
-                            {trainer.name}
-                          </h3>
-                          {trainer.instagram && (
-                            <a
-                              id={`trainer-header-instagram`}
-                              href={trainer.instagram}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="p-1 rounded bg-stone-900 border border-white/10 text-gray-400 hover:text-pink-400 hover:border-pink-500/30 transition-all z-20"
-                              title="Follow Sachin on Instagram"
-                            >
-                              <Instagram className="w-4 h-4" />
-                            </a>
-                          )}
-                        </div>
-                        <span className="font-sans text-xs text-gold/80 italic font-medium block">
-                          {trans.role}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Experience Badge */}
-                    <div className="text-left sm:text-right flex flex-row sm:flex-col gap-1.5 items-center sm:items-end z-10">
-                      <span className="px-3 py-1.5 rounded-md bg-electric-red/10 border border-electric-red/25 text-[10px] font-mono tracking-widest text-electric-red font-bold uppercase">
-                        {trans.experience}
-                      </span>
-                      <span className="text-xs font-mono text-gray-500 hidden sm:inline">
-                        ⭐⭐⭐⭐⭐ Coach
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Hovering flexing graphic silhouette inside background with separate load state */}
-                  <div className="absolute right-[-10px] md:right-[20px] bottom-14 md:bottom-20 w-44 md:w-56 h-64 md:h-80 opacity-20 md:opacity-25 group-hover:opacity-60 group-hover:translate-y-[-10px] transition-all duration-700 pointer-events-none mix-blend-screen overflow-hidden z-0">
-                    <motion.div
-                      className="w-full h-full relative"
-                      animate={{
-                        y: [0, -10, 0],
-                      }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    >
-                      {/* Background portrait loading skeleton tracker */}
-                      {!isPortraitLoaded && (
-                        <div className="absolute bottom-0 right-0 w-32 h-44 bg-stone-900/30 rounded-full filter blur-xl animate-pulse" />
                       )}
 
-                      <img
+                      <img 
                         src={coachPhoto}
-                        alt="Sachin Patil Posing Profile"
+                        alt="Sachin Patil Flexing profile"
                         referrerPolicy="no-referrer"
-                        onLoad={() => setIsPortraitLoaded(true)}
-                        className={`w-full h-full object-contain filter brightness-110 contrast-110 drop-shadow-[0_0_25px_rgba(201,168,76,0.25)] transition-all duration-700 ${
-                          isPortraitLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                        onLoad={() => setIsAvatarLoaded(true)}
+                        className={`w-full h-full object-cover select-none trainer-metallic-portrait ${
+                          isAvatarLoaded ? "opacity-100" : "opacity-0"
                         }`}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-transparent to-transparent opacity-95" />
-                    </motion.div>
+                      
+                      {/* Dynamic hover overlay if isAdmin is active */}
+                      {isAdmin && (
+                        <div 
+                          onClick={triggerFileSelect}
+                          className="absolute inset-0 bg-black/80 hover:bg-black/60 flex flex-col items-center justify-center cursor-pointer transition-all z-20 group/edit"
+                          title="Click to Choose Custom Image & Crop"
+                        >
+                          <Camera className="w-6 h-6 text-gold group-hover/edit:scale-110 transition-transform" />
+                          <span className="text-[9px] font-mono tracking-widest text-[#FFF] uppercase mt-2 text-center px-1 font-black leading-tight">
+                            CHANGE IMAGE
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Elegant Star/Badge */}
+                      <div className="absolute right-3 bottom-3 w-10 h-10 bg-[#0A0A0A]/85 flex items-center justify-center rounded-xl border border-gold/25 backdrop-blur-sm z-10 shadow-lg shadow-black/80">
+                        <Star className="w-4 h-4 text-gold fill-current" />
+                      </div>
+
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+                    </div>
                   </div>
 
-                  {/* Trainer info */}
-                  <div className="space-y-6 flex-grow z-10 relative">
+                  {/* Right Column: Bio, Specialties, Certifications & Booking Action */}
+                  <div className="md:col-span-7 flex flex-col justify-between space-y-6 z-10">
                     
-                    {/* Specialties List */}
-                    <div className="space-y-2 pt-2">
-                      <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase block">
-                        // {language === "mr" ? "विशेषज्ञ कोचिंग क्षेत्र" : "master specialist coaching vectors"}
+                    {/* Header: Name, Title, Experience */}
+                    <div className="space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
+                        <div>
+                          <div className="flex items-center gap-3">
+                            <h3 className="font-bebas text-3xl sm:text-4xl text-white tracking-wide group-hover:text-gold transition-all duration-300 ease-in-out uppercase mb-0">
+                              {trainer.name}
+                            </h3>
+                            {trainer.instagram && (
+                              <a
+                                id={`trainer-header-instagram`}
+                                href={trainer.instagram}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-1 rounded bg-stone-900 border border-white/10 text-gray-400 hover:text-pink-400 hover:border-pink-500/30 transition-all"
+                                title="Follow Sachin on Instagram"
+                              >
+                                <Instagram className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                          <span className="font-sans text-xs sm:text-sm text-gold/80 italic font-medium block mt-1">
+                            {trans.role}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col items-start sm:items-end gap-1">
+                          <span className="px-3 py-1.5 rounded-md bg-electric-red/10 border border-electric-red/25 text-[10px] font-mono tracking-widest text-electric-red font-bold uppercase">
+                            {trans.experience}
+                          </span>
+                          <span className="text-[10px] font-mono text-gray-500">
+                            ⭐⭐⭐⭐⭐ Coach
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Primary Strengths (Specialties) */}
+                    <div className="space-y-3">
+                      <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase block font-semibold">
+                        // {language === "mr" ? "विशेषज्ञ कोचिंग क्षेत्र" : "master specialist coaching strengths"}
                       </span>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-1">
                         {trans.specialty.map((spec, sidx) => (
                           <div key={sidx} className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-300">
-                            <span className="w-2 h-2 rounded-full bg-gold shrink-0" />
+                            <span className="w-2 h-2 rounded-full bg-gold shrink-0 shadow-[0_0_8px_var(--color-gold)]" />
                             <span>{spec}</span>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    {/* Certifications Bullet Ribbon */}
-                    <div className="space-y-2 pt-2">
-                      <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase block">
+                    {/* Certifications & Credentials */}
+                    <div className="space-y-3">
+                      <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase block font-semibold">
                         // {language === "mr" ? "प्रमाणपत्रे आणि पात्रता" : "elite board credentials"}
                       </span>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 pb-1">
                         {trans.certifications.map((cert, cidx) => (
                           <span
                             key={cidx}
-                            className="px-3 py-1 rounded bg-[#0A0A0A] border border-white/5 text-[10px] font-mono text-gray-400 tracking-wider"
+                            className="px-3 py-1.5 rounded-md bg-[#0A0A0A] border border-white/5 text-[10px] font-mono text-gray-400 tracking-wider hover:border-gold/25 transition-colors"
                           >
                             {cert}
                           </span>
                         ))}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Action CTA */}
-                  <div className="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row gap-3 relative z-10">
-                    <button
-                      id={`book-${trainer.name.toLowerCase().replace(" ", "-")}`}
-                      onClick={() => handleBookSession(trainer.name)}
-                      className="flex-grow flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-[#0A0A0A] border-2 border-gold/20 text-gold hover:bg-gold hover:text-[#0A0A0A] transition-all duration-300 cursor-pointer"
-                    >
-                      <span>{trans.buttonText}</span>
-                      <ArrowUpRight className="w-4 h-4" />
-                    </button>
-                    {trainer.instagram && (
-                      <a
-                        id={`trainer-cta-instagram`}
-                        href={trainer.instagram}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-gradient-to-r from-pink-500/10 to-orange-500/10 border border-pink-500/20 text-pink-400 hover:from-pink-500/20 hover:to-orange-500/20 hover:border-pink-500/40 transition-all duration-300 shrink-0"
-                        title="Follow Sachin on Instagram"
+                    {/* Action CTA: 'Book Now' Button and Social */}
+                    <div className="pt-4 border-t border-white/5 flex flex-col sm:flex-row gap-3">
+                      <button
+                        id={`book-${trainer.name.toLowerCase().replace(" ", "-")}`}
+                        onClick={() => handleBookSession(trainer.name)}
+                        className="flex-grow flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-[#0A0A0A] border-2 border-gold/20 text-gold hover:bg-gold hover:text-[#0A0A0A] transition-all duration-300 cursor-pointer shadow-md hover:shadow-gold/10"
                       >
-                        <Instagram className="w-5 h-5" />
-                        <span>{language === "mr" ? "फॉलो करा" : "Follow Coach"}</span>
-                      </a>
-                    )}
+                        <span>{trans.buttonText}</span>
+                        <ArrowUpRight className="w-4 h-4" />
+                      </button>
+                      {trainer.instagram && (
+                        <a
+                          id={`trainer-cta-instagram`}
+                          href={trainer.instagram}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-gradient-to-r from-pink-500/10 to-orange-500/10 border border-pink-500/20 text-pink-400 hover:from-pink-500/20 hover:to-orange-500/20 hover:border-pink-500/40 transition-all duration-300 shrink-0"
+                          title="Follow Sachin on Instagram"
+                        >
+                          <Instagram className="w-5 h-5" />
+                          <span>{language === "mr" ? "फॉलो करा" : "Follow Coach"}</span>
+                        </a>
+                      )}
+                    </div>
+
                   </div>
                 </motion.div>
               );

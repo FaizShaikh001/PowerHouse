@@ -51,6 +51,56 @@ export default function App() {
     const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
     if (isTouchDevice) return;
 
+    // Gentle synthesis of premium, high-frequency physical golden-shimmer chimes
+    let audioCtx: AudioContext | null = null;
+    const playGoldHoverChime = () => {
+      try {
+        const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioCtxClass) return;
+        if (!audioCtx) {
+          audioCtx = new AudioCtxClass();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+
+        const now = audioCtx.currentTime;
+
+        // Gate node - extremely low gain to maintain a premium feel
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0, now);
+        masterGain.gain.linearRampToValueAtTime(0.012, now + 0.005); // immediate gentle hit
+        masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.38); // organic decay envelope
+
+        // Anti-harshness lowpass
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(3200, now);
+
+        // Sweet shimmering perfect fifths for a crystal clear premium sound
+        const osc1 = audioCtx.createOscillator();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(2600, now); // sparkling sweet high freq
+
+        const osc2 = audioCtx.createOscillator();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(3900, now); // perfect fifth above (1.5x ratio)
+
+        osc1.connect(masterGain);
+        osc2.connect(masterGain);
+        masterGain.connect(filter);
+        filter.connect(audioCtx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+
+        osc1.stop(now + 0.4);
+        osc2.stop(now + 0.4);
+      } catch (error) {
+        // Fail silently so no logs or interruptions occur if audio is blocked or unsupported
+      }
+    };
+
     const handleMouseMove = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest(".gold-radial-border") as HTMLElement;
       if (!target) return;
@@ -79,11 +129,23 @@ export default function App() {
       const lightY = (y / rect.height) * 100;
       target.style.setProperty("--bg-radial-x", `${lightX}%`);
       target.style.setProperty("--bg-radial-y", `${lightY}%`);
+
+      // Track hover enter state to trigger a single golden chime play
+      if (target.getAttribute("data-hover-chime-active") !== "true") {
+        target.setAttribute("data-hover-chime-active", "true");
+        playGoldHoverChime();
+      }
     };
 
     const handleMouseLeave = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest(".gold-radial-border") as HTMLElement;
       if (!target) return;
+
+      // Ensure cursor has truly left the card boundaries before resetting chime triggers
+      const related = e.relatedTarget as HTMLElement;
+      if (!related || !target.contains(related)) {
+        target.removeAttribute("data-hover-chime-active");
+      }
 
       // Fluid snap back to neutral state resting values
       target.style.setProperty("--rotate-x", "0deg");
