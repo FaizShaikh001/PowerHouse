@@ -16,7 +16,7 @@ import {
   ChevronRight,
   RefreshCw
 } from "lucide-react";
-import { getViewportMargin } from "../utils/scroll";
+import { getViewportMargin, smoothScrollTo } from "../utils/scroll";
 
 interface GymZone {
   id: string;

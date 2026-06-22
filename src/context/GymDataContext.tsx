@@ -46,6 +46,30 @@ export const GymDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return false;
   });
 
+  // Automatically sync admin session changes to localStorage
+  React.useEffect(() => {
+    if (typeof localStorage !== "undefined") {
+      if (isAdmin) {
+        localStorage.setItem("powerhouse_admin_session", "true");
+      } else {
+        localStorage.removeItem("powerhouse_admin_session");
+      }
+    }
+  }, [isAdmin]);
+
+  // Synchronize admin session changes across other open browser tabs or windows
+  React.useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "powerhouse_admin_session") {
+        setIsAdmin(e.newValue === "true");
+      }
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", handleStorageChange);
+      return () => window.removeEventListener("storage", handleStorageChange);
+    }
+  }, []);
+
   const [adminCreds, setAdminCreds] = useState(() => {
     const defaultCreds = {
       username: "admin",
@@ -263,6 +287,7 @@ export const GymDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
       localStorage.removeItem("powerhouse_members");
       localStorage.removeItem("powerhouse_admin_creds");
       localStorage.removeItem("powerhouse_admin_logs");
+      localStorage.removeItem("powerhouse_admin_session");
     }
     setAdminCreds({
       username: "admin",

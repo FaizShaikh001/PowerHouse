@@ -4,6 +4,7 @@ import { Dumbbell, Menu, X, Flame, Instagram } from "lucide-react";
 import { NavLink } from "../types";
 import Logo from "./Logo";
 import { smoothScrollTo } from "../utils/scroll";
+import { useTranslation, Language } from "../context/LanguageContext";
 
 const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "#home" },
@@ -17,9 +18,52 @@ const NAV_LINKS: NavLink[] = [
   { label: "Contact", href: "#contact" },
 ];
 
+const getTranslationKey = (label: string) => {
+  switch (label.toLowerCase()) {
+    case "home": return "nav.home";
+    case "about": return "nav.about";
+    case "equipment": return "nav.equipment";
+    case "trainers": return "nav.trainers";
+    case "nutrition": return "nav.nutrition";
+    case "tools": return "nav.tools";
+    case "gallery": return "nav.gallery";
+    case "why us": return "nav.whyUs";
+    case "contact": return "nav.contact";
+    default: return label;
+  }
+};
+
 export default function Navbar({ isLoading = false }: { isLoading?: boolean }) {
   const [scrollY, setScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t, language, setLanguage } = useTranslation();
+
+  const LanguageSwitcher = () => (
+    <div className="flex items-center bg-zinc-900/60 border border-white/10 rounded-full p-1" id="language-switcher-pill">
+      <button
+        onClick={() => setLanguage("en")}
+        id="btn-lang-en"
+        className={`px-2 py-0.5 text-[9px] sm:text-[10px] font-mono font-bold tracking-wider rounded-full transition-all cursor-pointer ${
+          language === "en"
+            ? "bg-gold text-[#0A0A0A] shadow-sm shadow-gold/30"
+            : "text-gray-400 hover:text-white"
+        }`}
+      >
+        EN
+      </button>
+      <button
+        onClick={() => setLanguage("mr")}
+        id="btn-lang-mr"
+        className={`px-2 py-0.5 text-[9px] sm:text-[10px] font-mono font-bold tracking-wider rounded-full transition-all cursor-pointer ${
+          language === "mr"
+            ? "bg-gold text-[#0A0A0A] shadow-sm shadow-gold/30"
+            : "text-gray-400 hover:text-white"
+        }`}
+      >
+        मराठी
+      </button>
+    </div>
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -129,14 +173,14 @@ export default function Navbar({ isLoading = false }: { isLoading?: boolean }) {
                   }}
                   className="relative text-sm uppercase tracking-widest font-sans font-medium text-gray-300 hover:text-gold transition-colors duration-200 py-2 nav-glow-link"
                 >
-                  {link.label}
-                  {/* Active highlight lines could go here, or simple transition */}
+                  {t(getTranslationKey(link.label))}
                 </a>
               ))}
             </div>
 
             {/* Desktop CTA and Instagram */}
             <div className="hidden md:flex items-center gap-4">
+              <LanguageSwitcher />
               <motion.a
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.9 }}
@@ -146,7 +190,7 @@ export default function Navbar({ isLoading = false }: { isLoading?: boolean }) {
                 id="navbar-instagram-link"
                 className="p-2 rounded-full border border-gold/20 bg-gold/5 text-gold hover:bg-gold hover:border-gold hover:text-[#0A0A0A] transition-all duration-300"
                 aria-label="Power House Gym Instagram"
-                title="Follow us on Instagram"
+                title={t("general.followInstagram")}
               >
                 <Instagram className="w-4 h-4" />
               </motion.a>
@@ -157,13 +201,14 @@ export default function Navbar({ isLoading = false }: { isLoading?: boolean }) {
                 onClick={() => scrollToSection("#contact")}
                 className="relative overflow-hidden px-6 py-2.5 rounded-full font-sans text-xs uppercase tracking-widest font-bold bg-gold text-[#0A0A0A] shadow-lg shadow-gold/20 hover:shadow-gold/40 transition-shadow duration-300 cursor-pointer"
               >
-                Join Now
+                {t("hero.join")}
                 <div className="absolute inset-0 bg-white/20 -skew-x-12 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-1000" />
               </motion.button>
             </div>
 
             {/* Mobile Hamburger Menu Toggle and Actions */}
             <div className="flex md:hidden items-center gap-3">
+              <LanguageSwitcher />
               <a
                 href="https://www.instagram.com/powerhousegymbhusawal?igsh=NnF1Y2Nob2c4YW4z"
                 target="_blank"
@@ -212,7 +257,7 @@ export default function Navbar({ isLoading = false }: { isLoading?: boolean }) {
                   }}
                   className="text-xl uppercase tracking-widest font-bebas text-gray-200 hover:text-gold transition-colors block py-2 text-center"
                 >
-                  {link.label}
+                  {t(getTranslationKey(link.label))}
                 </motion.a>
               ))}
             </div>
@@ -229,7 +274,7 @@ export default function Navbar({ isLoading = false }: { isLoading?: boolean }) {
                   className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-gold/30 bg-gold/10 text-gold text-xs uppercase tracking-wider font-semibold hover:bg-gold hover:text-black transition-all"
                 >
                   <Instagram className="w-4 h-4" />
-                  <span>Follow us on Instagram</span>
+                  <span>{t("general.followInstagram")}</span>
                 </a>
               </div>
 
@@ -240,7 +285,7 @@ export default function Navbar({ isLoading = false }: { isLoading?: boolean }) {
                 }}
                 className="w-full max-w-xs px-8 py-4 rounded-full font-sans text-sm uppercase tracking-widest font-bold bg-gold text-[#0A0A0A] text-center shadow-lg shadow-gold/20 hover:shadow-gold/40 cursor-pointer"
               >
-                Join Power House
+                {t("general.joinPowerHouse")}
               </button>
               <span className="text-xs font-mono text-gray-500 tracking-wider">
                 📞 CALL NOW: 077570 77393

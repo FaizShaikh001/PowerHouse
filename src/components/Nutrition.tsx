@@ -121,7 +121,7 @@ export default function Nutrition() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: getViewportMargin() }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="flex flex-col justify-between p-8 rounded-3xl bg-gradient-to-b from-[#111] to-[#0A0A0A] border border-white/5 transition-all duration-300 group hover:border-gold/25"
+                className="flex flex-col justify-between p-8 rounded-3xl transition-all duration-300 group gold-radial-border"
               >
                 <div className="space-y-6">
                   {/* Topic badge & Icon */}

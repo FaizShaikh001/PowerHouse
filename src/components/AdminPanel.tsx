@@ -71,6 +71,8 @@ export default function AdminPanel() {
   const [editSecurityAnswer, setEditSecurityAnswer] = useState("");
   const [credentialsSaveSuccess, setCredentialsSaveSuccess] = useState(false);
   const [showDebugCredentials, setShowDebugCredentials] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showEditPassword, setShowEditPassword] = useState(false);
 
   // Password Recovery Wizard states
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
@@ -465,14 +467,29 @@ export default function AdminPanel() {
                               Forgot?
                             </button>
                           </div>
-                          <input
-                            type="password"
-                            required
-                            value={loginPassword}
-                            onChange={(e) => setLoginPassword(e.target.value)}
-                            placeholder="Type passcode..."
-                            className="w-full bg-zinc-900/60 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-gold font-mono"
-                          />
+                          <div className="relative">
+                            <input
+                              type={showLoginPassword ? "text" : "password"}
+                              required
+                              value={loginPassword}
+                              onChange={(e) => setLoginPassword(e.target.value)}
+                              placeholder="Type passcode..."
+                              className="w-full bg-zinc-900/60 border border-white/10 rounded-xl pl-4 pr-10 py-3 text-xs text-white focus:outline-none focus:border-gold font-mono"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowLoginPassword(!showLoginPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                              title={showLoginPassword ? "Hide password" : "Show password"}
+                              id="btn-login-password-toggle"
+                            >
+                              {showLoginPassword ? (
+                                <EyeOff className="w-4 h-4" />
+                              ) : (
+                                <Eye className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
                         </div>
 
                         {loginError && (
@@ -1077,12 +1094,25 @@ export default function AdminPanel() {
                                   <Key className="w-4 h-4" />
                                 </span>
                                 <input
-                                  type="text"
+                                  type={showEditPassword ? "text" : "password"}
                                   value={editPassword}
                                   onChange={(e) => setEditPassword(e.target.value)}
                                   placeholder="Type secure password..."
-                                  className="w-full bg-[#0D0D0D] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-xs text-white focus:outline-none focus:border-gold font-mono"
+                                  className="w-full bg-[#0D0D0D] border border-white/10 rounded-xl pl-10 pr-10 py-3 text-xs text-white focus:outline-none focus:border-gold font-mono"
                                 />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowEditPassword(!showEditPassword)}
+                                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-white transition-colors cursor-pointer"
+                                  title={showEditPassword ? "Hide password" : "Show password"}
+                                  id="btn-edit-password-toggle"
+                                >
+                                  {showEditPassword ? (
+                                    <EyeOff className="w-4 h-4" />
+                                  ) : (
+                                    <Eye className="w-4 h-4" />
+                                  )}
+                                </button>
                               </div>
                             </div>
 

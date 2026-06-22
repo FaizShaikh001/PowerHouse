@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Scale, HeartPulse, ShieldAlert, Sparkles, ChevronRight, Calculator, Info, Flame, Zap } from "lucide-react";
+import WorkoutTracker from "./WorkoutTracker";
 
 type UnitSystem = "metric" | "imperial";
-type ToolTab = "bmi" | "bmr";
+type ToolTab = "bmi" | "bmr" | "tracker";
 
 export default function FitnessTools() {
   const [activeTab, setActiveTab] = useState<ToolTab>("bmi");
@@ -170,6 +171,17 @@ export default function FitnessTools() {
               <HeartPulse className="w-4 h-4" />
               <span>Calorie Meter</span>
             </button>
+            <button
+              onClick={() => setActiveTab("tracker")}
+              className={`flex items-center gap-2 px-6 py-3 rounded-full font-sans text-xs uppercase tracking-widest font-bold transition-all duration-300 cursor-pointer ${
+                activeTab === "tracker"
+                  ? "bg-gold text-[#0A0A0A] font-black shadow-md shadow-gold/15"
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              <Flame className="w-4 h-4" />
+              <span>Workout Logs</span>
+            </button>
           </div>
         </div>
 
@@ -177,7 +189,7 @@ export default function FitnessTools() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           <AnimatePresence mode="wait">
-            {activeTab === "bmi" ? (
+            {activeTab === "bmi" && (
               <motion.div
                 key="tab-bmi"
                 initial={{ opacity: 0, y: 15 }}
@@ -420,7 +432,9 @@ export default function FitnessTools() {
 
                 </div>
               </motion.div>
-            ) : (
+            )}
+
+            {activeTab === "bmr" && (
               <motion.div
                 key="tab-bmr"
                 initial={{ opacity: 0, y: 15 }}
@@ -620,6 +634,10 @@ export default function FitnessTools() {
                   </div>
                 </div>
               </motion.div>
+            )}
+
+            {activeTab === "tracker" && (
+              <WorkoutTracker />
             )}
           </AnimatePresence>
 

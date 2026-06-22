@@ -187,3 +187,117 @@
 .animate-glow-pulse {
   animation: borderGlowPulse 4.5s infinite ease-in-out;
 }
+
+/* High-tech selected element highlighting with gold radial gradient 1px solid border & 3D perspective tracking */
+.gold-radial-border {
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --bg-radial-x: 50%;
+  --bg-radial-y: 0%;
+  --scale: 1;
+  --shadow-intensity: 0.05;
+
+  position: relative !important;
+  overflow: hidden !important;
+  border: 1px solid transparent !important;
+  background-image: linear-gradient(var(--color-dark-bg, #0A0A0A), var(--color-dark-bg, #0A0A0A)), 
+                    radial-gradient(circle at var(--bg-radial-x) var(--bg-radial-y), var(--color-gold) 15%, rgba(201,168,76,0.22) 75%, transparent 100%) !important;
+  background-origin: border-box !important;
+  background-clip: padding-box, border-box !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(201, 168, 76, var(--shadow-intensity)) !important;
+  transform: perspective(1000px) rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) scale(var(--scale)) !important;
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  transform-style: preserve-3d !important;
+}
+
+.gold-radial-border:hover {
+  --scale: 1.02;
+  --shadow-intensity: 0.25;
+}
+
+/* Secondary ambient rim light bleed / inner shadow bounce */
+.gold-radial-border::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+  z-index: 1 !important; /* Above parent backgrounds, below interactive contents and ::after shine */
+  mix-blend-mode: plus-lighter !important;
+  animation: ambientLightBreathe 6s infinite ease-in-out !important;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.gold-radial-border:hover::before {
+  animation: ambientLightHoverBreathe 3.5s infinite ease-in-out !important;
+}
+
+@keyframes ambientLightBreathe {
+  0%, 100% {
+    box-shadow: inset 0 0 12px 1px color-mix(in srgb, var(--color-gold-light) 4%, transparent),
+                inset 0 1px 1.5px 0 color-mix(in srgb, var(--color-gold-light) 10%, transparent);
+  }
+  50% {
+    box-shadow: inset 0 0 18px 2px color-mix(in srgb, var(--color-gold-light) 8%, transparent),
+                inset 0 1px 3px 0.5px color-mix(in srgb, var(--color-gold-light) 18%, transparent);
+  }
+}
+
+@keyframes ambientLightHoverBreathe {
+  0%, 100% {
+    box-shadow: inset 0 0 16px 1.5px color-mix(in srgb, var(--color-gold-light) 10%, transparent),
+                inset 0 1.5px 2px 0 color-mix(in srgb, var(--color-gold-light) 18%, transparent);
+  }
+  50% {
+    box-shadow: inset 0 0 26px 3px color-mix(in srgb, var(--color-gold-light) 20%, transparent),
+                inset 0 2px 4px 1px color-mix(in srgb, var(--color-gold-light) 32%, transparent);
+  }
+}
+
+/* Diagonal glimmer/shine sweep overlay on hover */
+.gold-radial-border::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(201, 168, 76, 0.02) 20%,
+    rgba(201, 168, 76, 0.25) 50%,
+    rgba(201, 168, 76, 0.02) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(35deg);
+  pointer-events: none;
+  opacity: 0;
+  transition: none;
+}
+
+.gold-radial-border:hover::after {
+  opacity: 1;
+  left: 150%;
+  transition: left 1.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.2s ease-in-out;
+}
+
+/* High-performance hardware-accelerated click ripple centered on touch/pointer interaction point */
+.gold-ripple-span {
+  position: absolute !important;
+  border-radius: 9999px !important;
+  transform: scale(0) !important;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-gold) 35%, transparent) 0%, transparent 70%) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+  animation: goldRippleWave 0.75s cubic-bezier(0.1, 0.8, 0.3, 1) forwards !important;
+}
+
+@keyframes goldRippleWave {
+  to {
+    transform: scale(1) !important;
+    opacity: 0 !important;
+  }
+}
+
+

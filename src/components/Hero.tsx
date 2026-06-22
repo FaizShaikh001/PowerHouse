@@ -4,6 +4,7 @@ import { ChevronDown, Trophy, ShieldCheck, Flame, Star } from "lucide-react";
 import { Stat } from "../types";
 import { smoothScrollTo } from "../utils/scroll";
 import Magnetic from "./Magnetic";
+import { useTranslation } from "../context/LanguageContext";
 
 const HERO_STATS: Stat[] = [
   { label: "Active Members", value: "500", suffix: "+", badge: "Bhusawal" },
@@ -50,6 +51,7 @@ export default function Hero() {
   const opacityFade = useTransform(scrollY, [0, 600], [1, 0.25]);
   const arrowOpacity = useTransform(scrollY, [0, 80], [1, 0]);
   const arrowPointerEvents = useTransform(scrollY, (latest) => latest > 70 ? "none" : "auto");
+  const { t, language } = useTranslation();
 
   const scrollToContact = () => {
     smoothScrollTo("#contact");
@@ -57,6 +59,16 @@ export default function Hero() {
 
   const scrollToAbout = () => {
     smoothScrollTo("#about");
+  };
+
+  const getStatTranslation = (label: string, badge: string) => {
+    if (language === "mr") {
+      if (label.includes("Active")) return { label: "सक्रिय सदस्य", badge: "भुसावळ" };
+      if (label.includes("Professional")) return { label: "प्रशिक्षण अनुभव", badge: "अनुभव" };
+      if (label.includes("Rating")) return { label: "उत्कृष्ट रेटिंग", badge: "सर्वोच्च" };
+      if (label.includes("Certifications")) return { label: "आंतरराष्ट्रीय ब्रँड्स", badge: "प्रीमियम" };
+    }
+    return { label, badge };
   };
 
   return (
@@ -108,7 +120,7 @@ export default function Hero() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 border border-gold/20 mb-2">
             <Flame className="w-4 h-4 text-gold animate-pulse" />
             <span className="font-sans text-xs uppercase tracking-[0.25em] text-gold font-bold">
-              Where Strength Meets Aesthetics
+              {t("hero.sculpt")}
             </span>
           </div>
 
@@ -119,9 +131,9 @@ export default function Hero() {
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="font-bebas text-5xl sm:text-7xl md:text-9xl tracking-tight text-white leading-[0.9] flex flex-col items-center"
           >
-            FORGE YOUR
+            {t("hero.forge")}
             <span className="relative text-gold uppercase mt-1">
-              PHYSIQUE
+              {t("hero.legacy")}
               <motion.span
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
@@ -133,7 +145,7 @@ export default function Hero() {
 
           {/* Subheading */}
           <p className="max-w-xl mx-auto font-sans text-base sm:text-lg text-gray-400 tracking-wider">
-            Premium Hoist & Viva Equipment. Expert Coaching. Personalized Nutrition Layout. Engineered for elite execution.
+            {t("hero.sub")}
           </p>
 
           {/* CTAs */}
@@ -146,7 +158,7 @@ export default function Hero() {
                 onClick={scrollToContact}
                 className="w-full sm:w-auto px-8 py-4 rounded-full font-sans text-xs uppercase tracking-widest font-bold bg-gold text-[#0A0A0A] cursor-pointer"
               >
-                Start Free Trial
+                {t("hero.join")}
               </motion.button>
             </Magnetic>
             <Magnetic scaleOnHover={1.06} range={85} strength={0.35}>
@@ -156,7 +168,7 @@ export default function Hero() {
                 onClick={scrollToAbout}
                 className="w-full sm:w-auto px-8 py-4 rounded-full font-sans text-xs uppercase tracking-widest font-bold border border-gold/45 text-gold bg-transparent hover:bg-white/5 transition-colors cursor-pointer"
               >
-                Take a Tour
+                {t("hero.explore")}
               </motion.button>
             </Magnetic>
           </div>
@@ -172,26 +184,29 @@ export default function Hero() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 sm:p-8 rounded-2xl bg-card-bg/60 backdrop-blur-md border border-white/5 shadow-2xl"
           id="hero-stats-panel"
         >
-          {HERO_STATS.map((stat, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col items-center justify-center text-center p-3 sm:p-5 border-r last:border-r-0 border-white/5"
-            >
-              <span className="text-[10px] font-mono tracking-widest uppercase text-gold/65 mb-1.5">
-                // {stat.badge}
-              </span>
-              <span className="font-bebas text-3xl sm:text-4xl text-white tracking-wider flex items-center justify-center">
-                {stat.value === "Hoist" ? (
-                  <span className="text-white">HOIST <span className="text-gold">& VIVA</span></span>
-                ) : (
-                  <CountUp endVal={stat.value} suffix={stat.suffix} />
-                )}
-              </span>
-              <span className="text-[11px] font-sans text-gray-400 font-medium tracking-wide mt-1">
-                {stat.label}
-              </span>
-            </div>
-          ))}
+          {HERO_STATS.map((stat, idx) => {
+            const transStat = getStatTranslation(stat.label, stat.badge);
+            return (
+              <div
+                key={idx}
+                className="flex flex-col items-center justify-center text-center p-3 sm:p-5 border-r last:border-r-0 border-white/5"
+              >
+                <span className="text-[10px] font-mono tracking-widest uppercase text-gold/65 mb-1.5">
+                  // {transStat.badge}
+                </span>
+                <span className="font-bebas text-3xl sm:text-4xl text-white tracking-wider flex items-center justify-center">
+                  {stat.value === "Hoist" ? (
+                    <span className="text-white">HOIST <span className="text-gold">& VIVA</span></span>
+                  ) : (
+                    <CountUp endVal={stat.value} suffix={stat.suffix} />
+                  )}
+                </span>
+                <span className="text-[11px] font-sans text-gray-400 font-medium tracking-wide mt-1">
+                  {transStat.label}
+                </span>
+              </div>
+            );
+          })}
         </motion.div>
       </div>
 

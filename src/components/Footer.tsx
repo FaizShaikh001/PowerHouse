@@ -1,9 +1,10 @@
-import { Flame, Instagram, Facebook, MessageCircle, ArrowUp, Zap } from "lucide-react";
+import { Flame, Instagram, MessageCircle, ArrowUp, Zap } from "lucide-react";
 import { motion } from "motion/react";
 import { NavLink } from "../types";
 import Logo from "./Logo";
 import { smoothScrollTo } from "../utils/scroll";
 import { useGymData } from "../context/GymDataContext";
+import { useTranslation } from "../context/LanguageContext";
 
 const FOOTER_LINKS: NavLink[] = [
   { label: "Home", href: "#home" },
@@ -17,6 +18,7 @@ const FOOTER_LINKS: NavLink[] = [
 
 export default function Footer() {
   const { timings } = useGymData();
+  const { t } = useTranslation();
 
   const scrollTo = (id: string) => {
     smoothScrollTo(id);
@@ -65,16 +67,6 @@ export default function Footer() {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="https://facebook.com"
-                id="social-facebook"
-                target="_blank"
-                rel="noreferrer"
-                className="w-10 h-10 rounded-lg bg-[#111] hover:bg-gold border border-white/5 hover:border-gold text-gray-400 hover:text-[#0A0A0A] flex items-center justify-center transition-all duration-300"
-                aria-label="Power House Gym Facebook Profile"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
                 href="https://wa.me/917757077393"
                 id="social-whatsapp"
                 target="_blank"
@@ -112,20 +104,20 @@ export default function Footer() {
           {/* Column 3: Contact coordinates details */}
           <div className="md:col-span-4 space-y-4">
             <h4 className="font-bebas text-lg text-white tracking-widest uppercase">
-              // INFORMATION
+              // {t("footer.info.title")}
             </h4>
             <ul className="space-y-3 font-sans text-xs text-gray-400 leading-relaxed">
               <li>
-                <strong className="text-white block font-medium">Power House Bhusawal:</strong>
-                Sr. No. 78/1B, Plot No. 10, Yawal Road, Saichandra Nagar, Bhusawal, Maharashtra 425201
+                <strong className="text-white block font-medium">{t("footer.info.name")}</strong>
+                {t("contact.location.address")}
               </li>
               <li>
-                <strong className="text-white block font-medium">Inquiries Phone:</strong>
+                <strong className="text-white block font-medium">{t("footer.info.inquiries")}</strong>
                 077570 77393
               </li>
               <li>
-                <strong className="text-white block font-medium">Closing Schedules:</strong>
-                Monday to Saturday {timings.weekdays}. {timings.sunday.toLowerCase().includes("closed") ? `Sunday Gym is ${timings.sunday}.` : `Sunday: ${timings.sunday}`}
+                <strong className="text-white block font-medium">{t("footer.info.schedules")}</strong>
+                {t("contact.hours.weekdays")} {timings.weekdays}. {timings.sunday.toLowerCase().includes("closed") ? `${t("contact.hours.sunday")} ${timings.sunday}.` : `${t("contact.hours.sunday")}: ${timings.sunday}`}
               </li>
             </ul>
           </div>

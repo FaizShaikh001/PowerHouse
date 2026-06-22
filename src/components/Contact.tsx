@@ -4,10 +4,12 @@ import { MapPin, Phone, Clock, Star, Send, ShieldCheck, Mail, Ticket, CheckCircl
 import { ContactFormInput } from "../types";
 import Magnetic from "./Magnetic";
 import { useGymData } from "../context/GymDataContext";
+import { useTranslation } from "../context/LanguageContext";
 import { getViewportMargin } from "../utils/scroll";
 
 export default function Contact() {
   const { timings } = useGymData();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<ContactFormInput>({
     name: "",
     phone: "",
@@ -350,7 +352,7 @@ export default function Contact() {
               className="space-y-6"
             >
               <h3 className="font-bebas text-3xl text-white tracking-wider">
-                CLUB CREDENTIALS
+                {t("nav.contact").toUpperCase()} CREDENTIALS
               </h3>
 
               {/* Grid of contact coordinates */}
@@ -363,10 +365,10 @@ export default function Contact() {
                   </div>
                   <div>
                     <span className="text-[10px] font-mono tracking-widest text-gray-500 uppercase block mb-1">
-                      LOCATION
+                      {t("contact.location.title")}
                     </span>
-                    <p className="font-sans text-xs text-gray-300 leading-relaxed sm:text-xs">
-                      Sr. No. 78/1B, Plot No. 10, Yawal Road, behind Navjeevan Furniture Mall, Saichandra Nagar, Shanti Nagar, Bhusawal, Maharashtra 425201
+                    <p className="font-sans text-xs text-gray-300 leading-relaxed sm:text-xs text-pretty" id="display-gym-main-address">
+                      {t("contact.location.address")}
                     </p>
                   </div>
                 </div>
@@ -378,13 +380,13 @@ export default function Contact() {
                   </div>
                   <div>
                     <span className="text-[10px] font-mono tracking-widest text-gray-500 uppercase block mb-1">
-                      TELEPHONE
+                      {t("contact.telephone.title")}
                     </span>
                     <p className="font-sans text-xs sm:text-sm text-gray-300 font-bold">
                       077570 77393
                     </p>
                     <p className="font-sans text-[10px] text-gray-500">
-                      Available via WhatsApp
+                      {t("contact.telephone.sub")}
                     </p>
                   </div>
                 </div>
@@ -396,20 +398,20 @@ export default function Contact() {
                   </div>
                   <div>
                     <span className="text-[10px] font-mono tracking-widest text-gray-500 uppercase block mb-1">
-                      CLUB HOURS
+                      {t("contact.hours.title")}
                     </span>
                     <div className="font-sans text-xs text-gray-300 space-y-1">
                       <p>
-                        Mon - Sat: <strong className="text-white">{timings.weekdays}</strong>
+                        {t("contact.hours.weekdays")}: <strong className="text-white">{timings.weekdays}</strong>
                       </p>
                       <p>
-                        Sunday: <strong className={timings.sunday.toLowerCase().includes("closed") ? "text-electric-red" : "text-white"}>{timings.sunday}</strong>
+                        {t("contact.hours.sunday")}: <strong className={timings.sunday.toLowerCase().includes("closed") ? "text-electric-red" : "text-white"}>{timings.sunday}</strong>
                       </p>
                       <p>
-                        Women's Exclusive: <strong className="text-pink-400">{timings.womenExclusive}</strong>
+                        {t("contact.hours.women")}: <strong className="text-pink-400">{timings.womenExclusive}</strong>
                       </p>
                       <p>
-                        <strong className="text-gold font-medium">❄️ Fully Air Conditioned Space</strong>
+                        <strong className="text-gold font-medium">❄️ {t("contact.hours.ac")}</strong>
                       </p>
                     </div>
                   </div>
@@ -422,13 +424,13 @@ export default function Contact() {
                   </div>
                   <div>
                     <span className="text-[10px] font-mono tracking-widest text-gray-500 uppercase block mb-1">
-                      PUBLIC RATING
+                      {t("contact.rating.title")}
                     </span>
                     <p className="font-sans text-sm text-gray-300 font-bold">
                       4.8 / 5.0 Rating
                     </p>
                     <p className="font-sans text-[10px] text-gray-500">
-                      Top Gym behind Navjeevan Mall
+                      {t("contact.rating.sub")}
                     </p>
                   </div>
                 </div>

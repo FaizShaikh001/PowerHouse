@@ -21,6 +21,7 @@ import ScrollReveal from "./components/ScrollReveal";
 import AccessibilityToggle from "./components/AccessibilityToggle";
 import BrandCustomizer from "./components/BrandCustomizer";
 import { GymDataProvider } from "./context/GymDataContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import AdminPanel from "./components/AdminPanel";
 
 export default function App() {
@@ -44,10 +45,101 @@ export default function App() {
     });
   };
 
+  // Dynamic 3D physical perspective tilt and ambient light tracking for elements with gold-radial-border
+  React.useEffect(() => {
+    // Disable on touch-only mobile devices to secure maximum scroll performance
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+    if (isTouchDevice) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest(".gold-radial-border") as HTMLElement;
+      if (!target) return;
+
+      const rect = target.getBoundingClientRect();
+      const x = e.clientX - rect.left; // cursor-x inside the card
+      const y = e.clientY - rect.top;  // cursor-y inside the card
+
+      // Normalize position around the center: range from -1 to 1
+      const midX = rect.width / 2;
+      const midY = rect.height / 2;
+      const dx = (x - midX) / midX;
+      const dy = (y - midY) / midY;
+
+      // Limit physical 3D rotational tilt to a gentle, premium 6.5 degrees max
+      const maxTilt = 6.5;
+      const rotateX = -dy * maxTilt;
+      const rotateY = dx * maxTilt;
+
+      // Update CSS variables on the component for instantaneous hardware-accelerated GPU updates
+      target.style.setProperty("--rotate-x", `${rotateX}deg`);
+      target.style.setProperty("--rotate-y", `${rotateY}deg`);
+
+      // Dynamic light beam tracking follow
+      const lightX = (x / rect.width) * 100;
+      const lightY = (y / rect.height) * 100;
+      target.style.setProperty("--bg-radial-x", `${lightX}%`);
+      target.style.setProperty("--bg-radial-y", `${lightY}%`);
+    };
+
+    const handleMouseLeave = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest(".gold-radial-border") as HTMLElement;
+      if (!target) return;
+
+      // Fluid snap back to neutral state resting values
+      target.style.setProperty("--rotate-x", "0deg");
+      target.style.setProperty("--rotate-y", "0deg");
+      target.style.setProperty("--bg-radial-x", "50%");
+      target.style.setProperty("--bg-radial-y", "0%");
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseout", handleMouseLeave);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseout", handleMouseLeave);
+    };
+  }, []);
+
+  // Centered click ripple effect on gold-radial-border cards
+  React.useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest(".gold-radial-border") as HTMLElement;
+      if (!target) return;
+
+      const rect = target.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const ripple = document.createElement("span");
+      ripple.className = "gold-ripple-span";
+
+      // Calculate maximum possible radius required to cover the outer edges
+      const size = Math.max(rect.width, rect.height) * 2;
+      ripple.style.width = `${size}px`;
+      ripple.style.height = `${size}px`;
+      ripple.style.left = `${x - size / 2}px`;
+      ripple.style.top = `${y - size / 2}px`;
+
+      target.appendChild(ripple);
+
+      // Clean up DOM node once the CSS scale/fade animation concludes
+      ripple.addEventListener("animationend", () => {
+        ripple.remove();
+      });
+    };
+
+    document.addEventListener("click", handleGlobalClick);
+    return () => {
+      document.removeEventListener("click", handleGlobalClick);
+    };
+  }, []);
+
   return (
     <GymDataProvider>
-      <div 
-        id="gym-root-container" 
+      <LanguageProvider>
+        <div 
+          id="gym-root-container" 
         className={`relative bg-[#0A0A0A] min-h-screen text-white select-none transition-colors duration-300 ${
           isHighContrast ? "high-contrast" : ""
         }`}
@@ -135,7 +227,8 @@ export default function App() {
 
       {/* Administrative dynamic DB live config suite */}
       <AdminPanel />
-    </div>
+      </div>
+      </LanguageProvider>
     </GymDataProvider>
   );
 }
