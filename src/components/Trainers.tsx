@@ -44,6 +44,9 @@ export default function Trainers() {
           "सर्वसमावेशक फॅट लॉस व शरीर रचना रूपांतरण"
         ],
         certifications: ["CSCS सर्टिफाइड मास्टर कोच", "K11 मास्टर ट्रेनर ग्रॅज्युएट", "स्पोर्ट्स न्यूट्रिशन प्रोफेशनल"],
+        metricsHeading: "कोचिंग कौशल्य आणि क्लायंट समाधान",
+        satisfactionLabel: "क्लायंट समाधान दर",
+        techniqueLabel: "बायो-मेकॅनिक्स आणि तंत्र प्राविण्य",
         buttonText: "सचिन पाटील स्लॉट आरक्षित करा",
         followCoach: "कोचला फॉलो करा"
       };
@@ -53,6 +56,9 @@ export default function Trainers() {
       experience,
       specialty,
       certifications,
+      metricsHeading: "COACHING PROWESS & CLIENT METRICS",
+      satisfactionLabel: "Client Satisfaction Rate",
+      techniqueLabel: "Bio-Mechanics & Technique Mastery",
       buttonText: "Request Sachin's Priority Coaching Slot",
       followCoach: "Follow Coach"
     };
@@ -381,13 +387,25 @@ export default function Trainers() {
                         </div>
                       )}
 
-                      {/* Elegant Star/Badge */}
-                      <div className="absolute right-3 bottom-3 w-10 h-10 bg-[#0A0A0A]/85 flex items-center justify-center rounded-xl border border-gold/25 backdrop-blur-sm z-10 shadow-lg shadow-black/80">
+                      {/* Elegant Star/Badge (moved to top-right to give space for frosted glass button overlay) */}
+                      <div className="absolute right-3 top-3 w-10 h-10 bg-[#0A0A0A]/85 flex items-center justify-center rounded-xl border border-gold/25 backdrop-blur-sm z-20 shadow-lg shadow-black/80">
                         <Star className="w-4 h-4 text-gold fill-current" />
                       </div>
 
+                      {/* Subtle frosted glass (backdrop-filter: blur(8px)) container layered over the portrait bottom */}
+                      <div className="absolute inset-x-0 bottom-0 p-4 bg-black/50 border-t border-white/10 z-20 shadow-[0_-12px_24px_rgba(0,0,0,0.6)] backdrop-blur-[8px]">
+                        <button
+                          id={`book-${trainer.name.toLowerCase().replace(" ", "-")}`}
+                          onClick={() => handleBookSession(trainer.name)}
+                          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-sans text-[11px] uppercase tracking-widest font-black bg-[#0A0A0A] border-2 border-gold/30 text-gold hover:bg-gold hover:text-[#0A0A0A] transition-all duration-300 cursor-pointer shadow-md hover:shadow-gold/10"
+                        >
+                          <span>{trans.buttonText}</span>
+                          <ArrowUpRight className="w-4 h-4" />
+                        </button>
+                      </div>
+
                       {/* Gradient Overlay */}
-                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+                      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none z-10" />
                     </div>
                   </div>
 
@@ -446,6 +464,48 @@ export default function Trainers() {
                       </div>
                     </div>
 
+                    {/* Performance Metrics: Satisfaction & Technique */}
+                    <div className="space-y-4 pt-1 pb-1">
+                      <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase block font-semibold">
+                        // {trans.metricsHeading}
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Client Satisfaction Metric */}
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-gray-300 font-medium">{trans.satisfactionLabel}</span>
+                            <span className="font-mono text-gold font-bold">99%</span>
+                          </div>
+                          <div className="h-2 w-full bg-[#050505] rounded-full overflow-hidden border border-white/5 relative p-[1px]">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: "99%" }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                              className="h-full rounded-full bg-gradient-to-r from-gold/50 via-gold to-gold shadow-[0_0_8px_rgba(201,168,76,0.5)]"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Technique Mastery Metric */}
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-gray-300 font-medium">{trans.techniqueLabel}</span>
+                            <span className="font-mono text-gold font-bold">96%</span>
+                          </div>
+                          <div className="h-2 w-full bg-[#050505] rounded-full overflow-hidden border border-white/5 relative p-[1px]">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: "96%" }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                              className="h-full rounded-full bg-gradient-to-r from-gold/50 via-gold to-gold shadow-[0_0_8px_rgba(201,168,76,0.5)]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* Certifications & Credentials */}
                     <div className="space-y-3">
                       <span className="text-[10px] font-mono tracking-widest text-gray-400 uppercase block font-semibold">
@@ -463,30 +523,22 @@ export default function Trainers() {
                       </div>
                     </div>
 
-                    {/* Action CTA: 'Book Now' Button and Social */}
-                    <div className="pt-4 border-t border-white/5 flex flex-col sm:flex-row gap-3">
-                      <button
-                        id={`book-${trainer.name.toLowerCase().replace(" ", "-")}`}
-                        onClick={() => handleBookSession(trainer.name)}
-                        className="flex-grow flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-[#0A0A0A] border-2 border-gold/20 text-gold hover:bg-gold hover:text-[#0A0A0A] transition-all duration-300 cursor-pointer shadow-md hover:shadow-gold/10"
-                      >
-                        <span>{trans.buttonText}</span>
-                        <ArrowUpRight className="w-4 h-4" />
-                      </button>
-                      {trainer.instagram && (
+                    {/* Action CTA: Social Links */}
+                    {trainer.instagram && (
+                      <div className="pt-4 border-t border-white/5 flex">
                         <a
                           id={`trainer-cta-instagram`}
                           href={trainer.instagram}
                           target="_blank"
                           rel="noreferrer"
-                          className="flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-gradient-to-r from-pink-500/10 to-orange-500/10 border border-pink-500/20 text-pink-400 hover:from-pink-500/20 hover:to-orange-500/20 hover:border-pink-500/40 transition-all duration-300 shrink-0"
+                          className="w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-sans text-xs uppercase tracking-widest font-bold bg-gradient-to-r from-pink-500/10 to-orange-500/10 border border-pink-500/20 text-pink-400 hover:from-pink-500/20 hover:to-orange-500/20 hover:border-pink-500/40 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-md"
                           title="Follow Sachin on Instagram"
                         >
-                          <Instagram className="w-5 h-5" />
-                          <span>{language === "mr" ? "फॉलो करा" : "Follow Coach"}</span>
+                          <Instagram className="w-5 h-5 animate-pulse" />
+                          <span>{language === "mr" ? "अधिक माहितीसाठी इंस्टाग्रामवर फॉलो करा" : "Follow Coach for Premium Form Videos / Daily Stories"}</span>
                         </a>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                   </div>
                 </motion.div>
