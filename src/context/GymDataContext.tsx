@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { loadGymData, saveGymData, PricingPlan, GymTimings, ClientTransformation, GymMember } from "../utils/gymDataStore";
+import { loadGymData, saveGymData, PricingPlan, GymTimings, ClientTransformation, GymMember, EventPost, EventRegistration } from "../utils/gymDataStore";
 
 export interface AdminLog {
   id: string;
@@ -13,6 +13,8 @@ interface GymDataContextProps {
   timings: GymTimings;
   transformations: ClientTransformation[];
   members: GymMember[];
+  eventPosts: EventPost[];
+  eventRegistrations: EventRegistration[];
   isAdmin: boolean;
   adminUsername: string;
   adminPassword: string;
@@ -28,6 +30,11 @@ interface GymDataContextProps {
   editTransformation: (trans: ClientTransformation) => void;
   addMember: (member: Omit<GymMember, "id" | "joinedDate">) => void;
   deleteMember: (id: string) => void;
+  addEventPost: (event: Omit<EventPost, "id" | "isActive">) => void;
+  deleteEventPost: (id: string) => void;
+  toggleEventPostActive: (id: string) => void;
+  addEventRegistration: (reg: Omit<EventRegistration, "id" | "timestamp">) => Promise<boolean>;
+  deleteEventRegistration: (id: string) => void;
   adminLogin: (id: string, pass: string) => boolean;
   adminLogout: () => void;
   recoverPassword: (answer: string) => string | null;
@@ -279,12 +286,124 @@ export const GymDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
     addLog("Security Session Terminated", "Administrative user logged out of web dashboard.");
   };
 
+  const addEventPost = (event: Omit<EventPost, "id" | "isActive">) => {
+    setData((prev) => {
+      const newItems: EventPost[] = [
+        {
+          ...event,
+          id: `event_${Date.now()}`,
+          isActive: true
+        },
+        ...(prev.eventPosts || [])
+      ];
+      const next = { ...prev, eventPosts: newItems };
+      saveGymData(next);
+      return next;
+    });
+    addLog("Added Event Poster", `Broadcasted a new event: "${event.title}".`);
+  };
+
+  const deleteEventPost = (id: string) => {
+    let title = id;
+    setData((prev) => {
+      const found = (prev.eventPosts || []).find(e => e.id === id);
+      if (found) title = found.title;
+      const newItems = (prev.eventPosts || []).filter((item) => item.id !== id);
+      const next = { ...prev, eventPosts: newItems };
+      saveGymData(next);
+      return next;
+    });
+    addLog("Deleted Event Poster", `Removed event poster index for "${title}".`);
+  };
+
+  const toggleEventPostActive = (id: string) => {
+    let title = id;
+    let nextState = false;
+    setData((prev) => {
+      const newItems = (prev.eventPosts || []).map((item) => {
+        if (item.id === id) {
+          nextState = !item.isActive;
+          title = item.title;
+          return { ...item, isActive: nextState };
+        }
+        return item;
+      });
+      const next = { ...prev, eventPosts: newItems };
+      saveGymData(next);
+      return next;
+    });
+    addLog("Toggled Event Status", `Set event "${title}" active status to: ${nextState}.`);
+  };
+
+  const addEventRegistration = async (reg: Omit<EventRegistration, "id" | "timestamp">): Promise<boolean> => {
+    const today = new Date().toISOString().split("T")[0];
+    const timestampStr = new Date().toLocaleTimeString("en-IN", { hour12: true });
+    
+    const newRegId = `reg_${Date.now()}`;
+    const newReg: EventRegistration = {
+      ...reg,
+      id: newRegId,
+      timestamp: `${today} ${timestampStr}`
+    };
+
+    let apiSuccess = false;
+
+    try {
+      const response = await fetch("/api/events/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventId: reg.eventId,
+          eventTitle: reg.eventTitle,
+          name: reg.name,
+          phone: reg.phone,
+          email: reg.email,
+          googleFormUrl: (data.eventPosts || []).find(e => e.id === reg.eventId)?.registrationFormUrl || "",
+          googleFormSubmitted: false
+        }),
+      });
+
+      const resData = await response.json();
+      console.log("[API Server Registration response]", resData);
+      apiSuccess = response.ok;
+    } catch (e) {
+      console.error("[API Registration network fail, continuing with local persistence]", e);
+    }
+
+    setData((prev) => {
+      const newRegs = [newReg, ...(prev.eventRegistrations || [])];
+      const next = { ...prev, eventRegistrations: newRegs };
+      saveGymData(next);
+      return next;
+    });
+
+    addLog("Event Registration Raised", `Registered attendee "${reg.name}" for "${reg.eventTitle}". Dispatching alert to Gmail.`);
+    return true;
+  };
+
+  const deleteEventRegistration = (id: string) => {
+    let name = id;
+    setData((prev) => {
+      const found = (prev.eventRegistrations || []).find(r => r.id === id);
+      if (found) name = found.name;
+      const newRegs = (prev.eventRegistrations || []).filter((item) => item.id !== id);
+      const next = { ...prev, eventRegistrations: newRegs };
+      saveGymData(next);
+      return next;
+    });
+    addLog("Deleted Event Registration", `Removed attendee registration for "${name}".`);
+  };
+
   const resetToDefaults = () => {
     if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
       localStorage.removeItem("powerhouse_pricing_plans");
       localStorage.removeItem("powerhouse_timings");
       localStorage.removeItem("powerhouse_transformations");
       localStorage.removeItem("powerhouse_members");
+      localStorage.removeItem("powerhouse_event_posts");
+      localStorage.removeItem("powerhouse_event_registrations");
       localStorage.removeItem("powerhouse_admin_creds");
       localStorage.removeItem("powerhouse_admin_logs");
       localStorage.removeItem("powerhouse_admin_session");
@@ -315,6 +434,8 @@ export const GymDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
         timings: data.timings,
         transformations: data.transformations,
         members: data.members,
+        eventPosts: data.eventPosts || [],
+        eventRegistrations: data.eventRegistrations || [],
         isAdmin,
         adminUsername: adminCreds.username,
         adminPassword: adminCreds.password,
@@ -330,6 +451,11 @@ export const GymDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
         editTransformation,
         addMember,
         deleteMember,
+        addEventPost,
+        deleteEventPost,
+        toggleEventPostActive,
+        addEventRegistration,
+        deleteEventRegistration,
         adminLogin,
         adminLogout,
         recoverPassword,

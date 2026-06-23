@@ -20,6 +20,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "nav.gallery": "Gallery",
     "nav.whyUs": "Why Us",
     "nav.contact": "Contact",
+    "nav.events": "Events",
 
     // Hero Section
     "hero.sculpt": "SCULPT YOUR SUPREME PHYSIQUE",
@@ -56,6 +57,8 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "section.faq.subtitle": "Everything You Need To Know About Power House Gym Program",
     "section.contact.title": "GET IN TOUCH",
     "section.contact.subtitle": "Initiate Your Transformation Today",
+    "section.events.title": "UPCOMING SPORTS & GYM EVENTS",
+    "section.events.subtitle": "Take action and push boundaries. Attend elite biomechanics workshops & training masterclasses.",
 
     // About Section
     "about.p1": "Power House Gym is Bhusawal's premier destination for individuals dedicated to strength, physical optimization, and longevity. Spanning over 4000 square feet, we combine state-of-the-art equipment with world-class personalized biomechanics coaching.",
@@ -125,6 +128,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "nav.gallery": "गॅलरी",
     "nav.whyUs": "आम्हीच का",
     "nav.contact": "संपर्क",
+    "nav.events": "कार्यक्रम",
 
     // Hero Section
     "hero.sculpt": "तुमचे शरीर अद्भूत आणि मजबूत बनवा",
@@ -161,6 +165,8 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "section.faq.subtitle": "पॉवर हाउस जिम प्रवासाबद्दल तुम्हाला पडणाऱ्या सर्व प्रश्नांची सविस्तर उत्तरे",
     "section.contact.title": "संपर्क साधा",
     "section.contact.subtitle": "आजच तुमचा प्रवास सुरू करा",
+    "section.events.title": "आगामी स्पोर्ट्स आणि जिम कार्यक्रम",
+    "section.events.subtitle": "कष्ट करा आणि स्वतःच्या सीमा ओलांडा. बायोमेकॅनिक्स वर्कशॉप आणि ट्रेनिंग मास्टरक्लासमध्ये सहभागी व्हा.",
 
     // About Section
     "about.p1": "पॉवर हाउस जिम हे भुसावळमधील उत्तम आरोग्य, ताकद आणि परिपूर्ण शरीर मिळवण्यासाठी समर्पित असलेले सर्वात लोकप्रिय व नावाजलेले केंद्र आहे. ४००० चौरस फुटांच्या भव्य जागेत, आम्ही जागतिक दर्जाच्या मशीन आणि तज्ज्ञ वैयक्तिक बायोमेकॅनिक्स प्रशिक्षणाचा मिलाफ प्रदान करतो.",

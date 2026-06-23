@@ -38,6 +38,56 @@ export interface GymMember {
   joinedDate: string;
 }
 
+export interface EventPost {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time?: string;
+  location?: string;
+  image: string; // poster URL or Base64 string
+  registrationFormUrl?: string; // Optional Google Form url
+  gmailReceiver?: string; // Receiver email
+  isActive: boolean;
+}
+
+export interface EventRegistration {
+  id: string;
+  eventId: string;
+  eventTitle: string;
+  name: string;
+  phone: string;
+  email?: string;
+  timestamp: string;
+}
+
+const DEFAULT_EVENTS: EventPost[] = [
+  {
+    id: "event_1",
+    title: "Master Deadlift & Biomechanics Workshop",
+    description: "Learn how to optimize spinal alignment, maximize torque, and engage neural drive with Master Coach Sachin Patil. Featuring direct stance assessment and mechanical breakdown.",
+    date: "2026-07-15",
+    time: "10:30 AM - 01:30 PM",
+    location: "PowerHouse Main Floor, Kandari",
+    image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80",
+    registrationFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfD7u-L5_L9iTfG4R-eW5gqJg7nOn5bC8PZ1vPhL16315N4Qg/viewform",
+    gmailReceiver: "shaikhfaizsadiq@gmail.com",
+    isActive: true
+  },
+  {
+    id: "event_2",
+    title: "PowerHouse Monsoon Hypertrophy Seminar",
+    description: "Discover molecular hypertrophy pathways, structured macro splits, and mechanical tension strategies for high-frequency training under real biomechanical conditions.",
+    date: "2026-08-02",
+    time: "04:30 PM - 07:00 PM",
+    location: "VIP Lounge, PowerHouse Gym",
+    image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=800&q=80",
+    registrationFormUrl: "",
+    gmailReceiver: "shaikhfaizsadiq@gmail.com",
+    isActive: true
+  }
+];
+
 // Durable premium defaults
 const DEFAULT_MEMBERS: GymMember[] = [
   { id: "mem_1", name: "Anil Kulkarni", phone: "+91 98230 11456", plan: "Quarterly Prestige", status: "Active", joinedDate: "2026-03-12" },
@@ -149,7 +199,9 @@ export const loadGymData = () => {
       pricingPlans: DEFAULT_PRICING_PLANS,
       timings: DEFAULT_TIMINGS,
       transformations: DEFAULT_TRANSFORMATIONS,
-      members: DEFAULT_MEMBERS
+      members: DEFAULT_MEMBERS,
+      eventPosts: DEFAULT_EVENTS,
+      eventRegistrations: [] as EventRegistration[]
     };
   }
 
@@ -157,12 +209,16 @@ export const loadGymData = () => {
   const timingsVal = localStorage.getItem("powerhouse_timings");
   const transformationsVal = localStorage.getItem("powerhouse_transformations");
   const membersVal = localStorage.getItem("powerhouse_members");
+  const eventsVal = localStorage.getItem("powerhouse_event_posts");
+  const regsVal = localStorage.getItem("powerhouse_event_registrations");
 
   return {
     pricingPlans: pricingVal ? JSON.parse(pricingVal) : DEFAULT_PRICING_PLANS,
     timings: timingsVal ? JSON.parse(timingsVal) : DEFAULT_TIMINGS,
     transformations: transformationsVal ? JSON.parse(transformationsVal) : DEFAULT_TRANSFORMATIONS,
-    members: membersVal ? JSON.parse(membersVal) : DEFAULT_MEMBERS
+    members: membersVal ? JSON.parse(membersVal) : DEFAULT_MEMBERS,
+    eventPosts: eventsVal ? JSON.parse(eventsVal) : DEFAULT_EVENTS,
+    eventRegistrations: regsVal ? JSON.parse(regsVal) : ([] as EventRegistration[])
   };
 };
 
@@ -171,6 +227,8 @@ export const saveGymData = (data: {
   timings: GymTimings;
   transformations: ClientTransformation[];
   members: GymMember[];
+  eventPosts: EventPost[];
+  eventRegistrations: EventRegistration[];
 }) => {
   if (typeof window === "undefined" || typeof localStorage === "undefined") return;
 
@@ -178,4 +236,6 @@ export const saveGymData = (data: {
   localStorage.setItem("powerhouse_timings", JSON.stringify(data.timings));
   localStorage.setItem("powerhouse_transformations", JSON.stringify(data.transformations));
   localStorage.setItem("powerhouse_members", JSON.stringify(data.members));
+  localStorage.setItem("powerhouse_event_posts", JSON.stringify(data.eventPosts));
+  localStorage.setItem("powerhouse_event_registrations", JSON.stringify(data.eventRegistrations));
 };

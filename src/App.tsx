@@ -15,6 +15,7 @@ import Gallery from "./components/Gallery";
 import Testimonials from "./components/Testimonials";
 import FAQ from "./components/FAQ";
 import Contact from "./components/Contact";
+import Events from "./components/Events";
 import Footer from "./components/Footer";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import ScrollReveal from "./components/ScrollReveal";
@@ -256,6 +257,10 @@ export default function App() {
 
         <ScrollReveal variant="fade-up" delay={0.1} duration={0.9} threshold={0.1}>
           <WhyUs />
+        </ScrollReveal>
+
+        <ScrollReveal variant="fade-up" delay={0.1} duration={0.9} threshold={0.1}>
+          <Events />
         </ScrollReveal>
 
         <ScrollReveal variant="scale-in" delay={0.1} duration={0.95} threshold={0.1}>

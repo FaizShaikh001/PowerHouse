@@ -15,6 +15,7 @@ const NAV_LINKS: NavLink[] = [
   { label: "Tools", href: "#fitness-tools" },
   { label: "Gallery", href: "#gallery" },
   { label: "Why Us", href: "#why-us" },
+  { label: "Events", href: "#events" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -26,6 +27,7 @@ const getTranslationKey = (label: string) => {
     case "trainers": return "nav.trainers";
     case "nutrition": return "nav.nutrition";
     case "tools": return "nav.tools";
+    case "events": return "nav.events";
     case "gallery": return "nav.gallery";
     case "why us": return "nav.whyUs";
     case "contact": return "nav.contact";

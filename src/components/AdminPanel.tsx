@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useGymData } from "../context/GymDataContext";
 import { loadGymData } from "../utils/gymDataStore";
-import { Lock, Unlock, LogOut, Settings2, Clock, DollarSign, RefreshCw, X, Check, Save, Users, TrendingUp, Plus, Search, UserPlus, Trash2, ShieldCheck, Key, HelpCircle, Activity, Eye, EyeOff } from "lucide-react";
+import { Lock, Unlock, LogOut, Settings2, Clock, DollarSign, RefreshCw, X, Check, Save, Users, TrendingUp, Plus, Search, UserPlus, Trash2, ShieldCheck, Key, HelpCircle, Activity, Eye, EyeOff, Calendar, Ticket, Image, FileText } from "lucide-react";
 
 export default function AdminPanel() {
   const { 
     pricingPlans, 
     timings, 
     members = [],
+    eventPosts = [],
+    eventRegistrations = [],
     isAdmin, 
     adminUsername,
     adminPassword,
@@ -20,6 +22,10 @@ export default function AdminPanel() {
     updateTimings, 
     addMember,
     deleteMember,
+    addEventPost,
+    deleteEventPost,
+    toggleEventPostActive,
+    deleteEventRegistration,
     adminLogin, 
     adminLogout, 
     recoverPassword,
@@ -28,7 +34,33 @@ export default function AdminPanel() {
   } = useGymData();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"pricing" | "timings" | "members" | "security" | "logs">("pricing");
+  const [activeTab, setActiveTab] = useState<"pricing" | "timings" | "members" | "security" | "logs" | "events" | "registrations">("pricing");
+
+  // Event Posting states
+  const [newEventTitle, setNewEventTitle] = useState("");
+  const [newEventDescription, setNewEventDescription] = useState("");
+  const [newEventDate, setNewEventDate] = useState("");
+  const [newEventTime, setNewEventTime] = useState("");
+  const [newEventLocation, setNewEventLocation] = useState("");
+  const [newEventImage, setNewEventImage] = useState("");
+  const [newEventGFormUrl, setNewEventGFormUrl] = useState("");
+  const [eventSearchQuery, setEventSearchQuery] = useState("");
+  const [regSearchQuery, setRegSearchQuery] = useState("");
+  const [eventSaveSuccess, setEventSaveSuccess] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleImageUpload = (file: File) => {
+    if (!file || !file.type.startsWith("image/")) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setNewEventImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Admin Audit Log states
   const [logFilter, setLogFilter] = useState("");
@@ -148,6 +180,38 @@ export default function AdminPanel() {
     setLoginId(adminUsername);
     setLoginPassword(newPass);
     setLoginError("Password reset successfully! Log in below.");
+  };
+
+  const handlePostEvent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEventTitle.trim() || !newEventDate.trim()) {
+       return;
+    }
+
+    addEventPost({
+      title: newEventTitle.trim(),
+      description: newEventDescription.trim() || "No detailed description compiled.",
+      date: newEventDate.trim(),
+      time: newEventTime.trim() || undefined,
+      location: newEventLocation.trim() || undefined,
+      image: newEventImage.trim() || "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=400&q=80",
+      registrationFormUrl: newEventGFormUrl.trim() || undefined,
+      gmailReceiver: "shaikhfaizsadiq@gmail.com"
+    });
+
+    // Reset Form
+    setNewEventTitle("");
+    setNewEventDescription("");
+    setNewEventDate("");
+    setNewEventTime("");
+    setNewEventLocation("");
+    setNewEventImage("");
+    setNewEventGFormUrl("");
+
+    setEventSaveSuccess(true);
+    setTimeout(() => {
+      setEventSaveSuccess(false);
+    }, 2500);
   };
 
   const handlePlanFieldChange = (index: number, field: string, value: string) => {
@@ -649,6 +713,32 @@ export default function AdminPanel() {
                       </button>
 
                       <button
+                        onClick={() => setActiveTab("events")}
+                        className={`pb-3 px-3 sm:px-4 font-sans text-[10px] sm:text-xs uppercase tracking-widest font-black cursor-pointer transition-all border-b-2 flex items-center gap-2 shrink-0 ${
+                          activeTab === "events"
+                            ? "border-gold text-gold"
+                            : "border-transparent text-gray-500 hover:text-gray-350"
+                        }`}
+                        id="events-tab-trigger"
+                      >
+                        <Calendar className="w-4 h-4 text-gray-500 shrink-0" />
+                        <span>5. Events & Posters</span>
+                      </button>
+
+                      <button
+                        onClick={() => setActiveTab("registrations")}
+                        className={`pb-3 px-3 sm:px-4 font-sans text-[10px] sm:text-xs uppercase tracking-widest font-black cursor-pointer transition-all border-b-2 flex items-center gap-2 shrink-0 ${
+                          activeTab === "registrations"
+                            ? "border-gold text-gold"
+                            : "border-transparent text-gray-500 hover:text-gray-350"
+                        }`}
+                        id="registrations-tab-trigger"
+                      >
+                        <Ticket className="w-4 h-4 text-gray-500 shrink-0" />
+                        <span>6. Event Registrations Guild ({eventRegistrations.length})</span>
+                      </button>
+
+                      <button
                         onClick={() => setActiveTab("logs")}
                         className={`pb-3 px-3 sm:px-4 font-sans text-[10px] sm:text-xs uppercase tracking-widest font-black cursor-pointer transition-all border-b-2 flex items-center gap-2 shrink-0 ${
                           activeTab === "logs"
@@ -658,7 +748,7 @@ export default function AdminPanel() {
                         id="logs-tab-trigger"
                       >
                         <Activity className="w-4 h-4 text-gray-500 shrink-0" />
-                        <span>5. Action Audit Trail</span>
+                        <span>7. Action Audit Trail</span>
                       </button>
                     </div>
 
@@ -1189,7 +1279,441 @@ export default function AdminPanel() {
                       </div>
                     )}
 
-                    {/* TAB PANEL 5: Activity Logs & Audit Trails */}
+                    {/* TAB PANEL 5: Events Curation and Broadcaster */}
+                    {activeTab === "events" && (
+                      <div className="space-y-6" id="admin-events-management-panel">
+                        {eventSaveSuccess && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded-xl p-3 flex items-center justify-center gap-2 text-xs font-mono font-bold"
+                          >
+                            <Check className="w-4 h-4" />
+                            <span>EVENT POSTER BROADCASTED SUCCESSFULLY TO OUTWARD PORTAL</span>
+                          </motion.div>
+                        )}
+
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                          
+                          {/* Left: Curation Form */}
+                          <div className="lg:col-span-5 bg-zinc-900/40 border border-white/5 rounded-2xl p-6 space-y-4">
+                            <h3 className="font-bebas text-lg text-white tracking-widest uppercase flex items-center gap-2">
+                              <Calendar className="w-5 h-5 text-gold animate-pulse" />
+                              <span>BROADCAST NEW EVENT</span>
+                            </h3>
+                            <p className="text-[10px] font-sans text-gray-500 leading-normal">
+                              Publish official banners, biomechanics masterclasses, or challenge forms to the public gym events feed.
+                            </p>
+
+                            <form onSubmit={handlePostEvent} className="space-y-4 pt-2">
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">Event Title *</label>
+                                <input
+                                  type="text"
+                                  required
+                                  value={newEventTitle}
+                                  onChange={(e) => setNewEventTitle(e.target.value)}
+                                  placeholder="e.g. Master Power Clean Lecture"
+                                  className="w-full bg-[#0D0D0D] border border-white/10 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-gold font-sans"
+                                />
+                              </div>
+
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">Scheduled Date *</label>
+                                <input
+                                  type="date"
+                                  required
+                                  value={newEventDate}
+                                  onChange={(e) => setNewEventDate(e.target.value)}
+                                  className="w-full bg-[#0D0D0D] border border-white/10 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-gold font-sans"
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1">
+                                  <label className="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">Expected Time</label>
+                                  <input
+                                    type="text"
+                                    value={newEventTime}
+                                    onChange={(e) => setNewEventTime(e.target.value)}
+                                    placeholder="e.g. 09:00 AM - 12:00 PM"
+                                    className="w-full bg-[#0D0D0D] border border-white/10 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-gold font-sans"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">Location / Room</label>
+                                  <input
+                                    type="text"
+                                    value={newEventLocation}
+                                    onChange={(e) => setNewEventLocation(e.target.value)}
+                                    placeholder="e.g. Kandari Ground Floor"
+                                    className="w-full bg-[#0D0D0D] border border-white/10 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-gold font-sans"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">Event Poster Flyer</label>
+                                
+                                {/* Drag & Drop Sector with click triggers */}
+                                <div
+                                  onDragOver={(e) => {
+                                    e.preventDefault();
+                                    setIsDragging(true);
+                                  }}
+                                  onDragLeave={() => setIsDragging(false)}
+                                  onDrop={(e) => {
+                                    e.preventDefault();
+                                    setIsDragging(false);
+                                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                                      handleImageUpload(e.dataTransfer.files[0]);
+                                    }
+                                  }}
+                                  onClick={() => {
+                                    document.getElementById("admin-event-file-uploader")?.click();
+                                  }}
+                                  className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center gap-2 ${
+                                    isDragging 
+                                      ? "border-gold bg-gold/10" 
+                                      : "border-white/10 hover:border-gold/30 bg-[#0B0B0C] hover:bg-[#0F0F10]"
+                                  }`}
+                                  id="event-image-drag-zone"
+                                >
+                                  <input
+                                    type="file"
+                                    id="admin-event-file-uploader"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                      if (e.target.files && e.target.files[0]) {
+                                        handleImageUpload(e.target.files[0]);
+                                      }
+                                    }}
+                                  />
+                                  
+                                  {newEventImage ? (
+                                    <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden bg-zinc-950 border border-white/5">
+                                      <img 
+                                        src={newEventImage} 
+                                        alt="Preview" 
+                                        className="w-full h-full object-cover" 
+                                        referrerPolicy="no-referrer"
+                                      />
+                                      <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                        <p className="text-[10px] font-mono font-bold text-white uppercase tracking-widest bg-zinc-900/90 py-1.5 px-3 rounded-full border border-white/10">Replace Image</p>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <Image className="w-8 h-8 text-stone-600 animate-pulse" />
+                                      <div>
+                                        <p className="text-[11px] font-sans text-stone-300 font-bold">Drag and drop file here, or click to browse</p>
+                                        <p className="text-[9px] font-mono text-stone-500 mt-1 uppercase tracking-wider">Supports PNG, JPG, JPEG, WEBP or Base64 screenshots</p>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+
+                                {/* Custom Fallback link or Preset options */}
+                                <div className="pt-2 space-y-1.5">
+                                  <div className="flex items-center gap-2">
+                                    <label className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest shrink-0">Or Paste Image URL:</label>
+                                    <input
+                                      type="text"
+                                      value={newEventImage.startsWith("data:") ? "" : newEventImage}
+                                      onChange={(e) => setNewEventImage(e.target.value)}
+                                      placeholder="Pasted image link (optional)"
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="w-full bg-[#0D0D0D]/50 border border-white/5 focus:border-gold/30 rounded px-2 py-1 text-[10px] text-white focus:outline-none font-sans"
+                                    />
+                                    {newEventImage && (
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setNewEventImage("");
+                                        }}
+                                        className="p-1 text-rose-400 hover:text-rose-500 hover:bg-white/5 rounded cursor-pointer"
+                                        title="Clear Image selection"
+                                      >
+                                        <X className="w-3 h-3" />
+                                      </button>
+                                    )}
+                                  </div>
+                                  
+                                  <div className="flex gap-2.5 items-center">
+                                    <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest">Presets:</span>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setNewEventImage("https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80");
+                                      }}
+                                      className="text-[8px] font-mono hover:text-gold text-stone-500 bg-white/5 hover:bg-white/10 px-1.5 py-0.5 rounded cursor-pointer transition-all"
+                                    >
+                                      Masterclass Flyer
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setNewEventImage("https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=800&q=80");
+                                      }}
+                                      className="text-[8px] font-mono hover:text-gold text-stone-500 bg-white/5 hover:bg-white/10 px-1.5 py-0.5 rounded cursor-pointer transition-all"
+                                    >
+                                      Seminar Flyer
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">Google Form Integration Link (Optional)</label>
+                                <input
+                                  type="url"
+                                  value={newEventGFormUrl}
+                                  onChange={(e) => setNewEventGFormUrl(e.target.value)}
+                                  placeholder="https://docs.google.com/forms/d/..."
+                                  className="w-full bg-[#0D0D0D] border border-white/10 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-gold font-sans"
+                                />
+                              </div>
+
+                              <div className="space-y-1">
+                                <label className="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">Description & Core Agendas</label>
+                                <textarea
+                                  value={newEventDescription}
+                                  onChange={(e) => setNewEventDescription(e.target.value)}
+                                  placeholder="Describe schedules, key targets, and benefits in detail..."
+                                  rows={3}
+                                  className="w-full bg-[#0D0D0D] border border-white/10 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-gold font-sans resize-none"
+                                />
+                              </div>
+
+                              <button
+                                type="submit"
+                                className="w-full bg-gold hover:bg-gold-light text-black py-3 rounded-lg text-xs uppercase tracking-widest font-black cursor-pointer transition-all shadow-md mt-2 flex items-center justify-center gap-1.5"
+                              >
+                                <Plus className="w-4 h-4 shrink-0" />
+                                <span>Publish Active Poster</span>
+                              </button>
+                            </form>
+                          </div>
+
+                          {/* Right: Existing Events list */}
+                          <div className="lg:col-span-7 bg-zinc-900/20 border border-white/5 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                                <h3 className="font-bebas text-lg text-white tracking-widest uppercase">
+                                  CONSTELLATION OF POSTED EVENTS ({eventPosts.length})
+                                </h3>
+                                <div className="relative">
+                                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-stone-600" />
+                                  <input
+                                    type="text"
+                                    value={eventSearchQuery}
+                                    onChange={(e) => setEventSearchQuery(e.target.value)}
+                                    placeholder="Search events index..."
+                                    className="bg-[#0A0A0A] border border-white/5 rounded-lg py-1.5 pl-8 pr-3 text-[10px] text-white focus:outline-none focus:border-gold w-[180px] sm:w-[220px] font-sans"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                                {eventPosts
+                                  .filter((e: any) => {
+                                    const q = eventSearchQuery.trim().toLowerCase();
+                                    return !q || e.title.toLowerCase().includes(q) || (e.description || "").toLowerCase().includes(q);
+                                  })
+                                  .map((ev: any) => (
+                                    <div key={ev.id} className="relative p-4 bg-[#111112] hover:bg-[#151517] border border-white/5 hover:border-white/10 rounded-xl transition-all flex items-center justify-between gap-4">
+                                      <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-12 h-12 rounded-lg bg-zinc-950 overflow-hidden shrink-0 border border-white/5">
+                                          <img src={ev.image} alt="" className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="min-w-0">
+                                          <h4 className="text-xs font-bold text-white truncate font-sans">{ev.title}</h4>
+                                          <div className="flex gap-3 text-[9px] font-mono text-stone-500 mt-1">
+                                            <span>📅 {ev.date}</span>
+                                            {ev.location && <span className="truncate">📍 {ev.location}</span>}
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div className="flex items-center gap-1.5 shrink-0">
+                                        <button
+                                          type="button"
+                                          onClick={() => toggleEventPostActive(ev.id)}
+                                          title="Toggle Active Broadcast"
+                                          className={`px-2 py-1 rounded text-[8px] font-mono tracking-widest uppercase transition-all border cursor-pointer ${
+                                            ev.isActive
+                                              ? "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"
+                                              : "bg-stone-500/10 text-stone-400 border-stone-500/20 hover:bg-stone-500/20"
+                                          }`}
+                                        >
+                                          {ev.isActive ? "Active" : "Paused"}
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setConfirmModal({
+                                              isOpen: true,
+                                              title: `PURGE EVENT: ${ev.title}`,
+                                              description: "Are you sure you want to permanently delete this event flyer and details? Registrants logs are kept untouched.",
+                                              actionLabel: "Purge Poster",
+                                              severity: "danger",
+                                              onConfirm: () => {
+                                                deleteEventPost(ev.id);
+                                                setConfirmModal(null);
+                                              }
+                                            });
+                                          }}
+                                          className="p-1.5 rounded-lg text-rose-400 hover:text-rose-500 border border-white/5 bg-[#0D0D0D] hover:bg-[#1E1E1E] transition-all cursor-pointer"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ))}
+
+                                {eventPosts.length === 0 && (
+                                  <p className="text-[10px] font-mono text-center text-stone-600 py-8">NO EVENT FLYERS RECORDED IN LOCAL CACHE NODE.</p>
+                                )}
+                              </div>
+                            </div>
+
+                            <p className="text-[9px] font-mono text-stone-600 uppercase text-center border-t border-white/5 pt-4 mt-4">
+                              Broadcast nodes synchronizing securely with static cache.
+                            </p>
+                          </div>
+
+                        </div>
+                      </div>
+                    )}
+
+                    {/* TAB PANEL 6: Event Registrations Ledger list */}
+                    {activeTab === "registrations" && (
+                      <div className="space-y-6" id="admin-event-registrations-panel">
+                        <div className="bg-[#141414] border border-white/5 rounded-2xl p-6 shadow-xl space-y-6">
+                          
+                          {/* Header section with Search & Counts */}
+                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-5">
+                            <div className="space-y-1">
+                              <h3 className="font-bebas text-xl text-white tracking-widest uppercase flex items-center gap-2">
+                                <Ticket className="w-5 h-5 text-gold animate-pulse" />
+                                <span>CONVENTIONAL REGISTRATION LEDGER REGISTER</span>
+                              </h3>
+                              <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest leading-normal">
+                                Secure ledger recording participants registration details, linked credentials, timestamps, and outward secure transmission statuses.
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+                                <input
+                                  type="text"
+                                  value={regSearchQuery}
+                                  onChange={(e) => setRegSearchQuery(e.target.value)}
+                                  placeholder="Search attendee by name, phone or event..."
+                                  className="bg-[#0A0A0A] border border-white/10 focus:border-gold rounded-xl py-2 pl-9 pr-4 text-xs text-white focus:outline-none w-[240px] sm:w-[320px] font-sans"
+                                />
+                              </div>
+                              <div className="px-3 py-1.5 bg-[#0C0C0D] border border-white/5 rounded-lg text-right font-mono shrink-0">
+                                <span className="text-[8px] font-mono text-stone-500 uppercase block leading-none">Records Yield</span>
+                                <span className="text-xs text-gold font-bold leading-none">{eventRegistrations.length}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Registry Elements Table */}
+                          <div className="border border-white/5 rounded-xl bg-[#0D0D0E] overflow-hidden">
+                            <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-[#111112] text-[9px] font-mono font-bold uppercase tracking-widest text-stone-500 border-b border-white/5 hidden sm:grid">
+                              <div className="col-span-3">Attendee Name</div>
+                              <div className="col-span-3">Event Objective</div>
+                              <div className="col-span-3">Mobile Contact</div>
+                              <div className="col-span-2">Registered On</div>
+                              <div className="col-span-1 text-center font-bold">Action</div>
+                            </div>
+
+                            <div className="divide-y divide-white/5 max-h-[420px] overflow-y-auto">
+                              {eventRegistrations
+                                .filter((reg: any) => {
+                                  const q = regSearchQuery.trim().toLowerCase();
+                                  return !q || 
+                                    reg.name.toLowerCase().includes(q) || 
+                                    reg.phone.toLowerCase().includes(q) || 
+                                    (reg.email || "").toLowerCase().includes(q) || 
+                                    reg.eventTitle.toLowerCase().includes(q);
+                                })
+                                .map((reg: any) => (
+                                  <div key={reg.id} className="p-4 sm:p-3 sm:px-4 grid grid-cols-1 sm:grid-cols-12 gap-2 sm:items-center text-xs font-sans text-stone-300 hover:bg-white/[0.01] transition-colors">
+                                    <div className="sm:col-span-3 font-semibold text-white flex items-center gap-2">
+                                      <div className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" />
+                                      <div>
+                                        <span>{reg.name}</span>
+                                        {reg.email && <span className="text-[9px] font-mono text-stone-500 block leading-tight truncate">{reg.email}</span>}
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="sm:col-span-3 text-gold text-xs font-sans font-medium">
+                                      <span className="sm:hidden text-[9px] font-mono text-stone-500 block uppercase font-bold">Event:</span>
+                                      <span className="truncate block">{reg.eventTitle}</span>
+                                    </div>
+
+                                    <div className="sm:col-span-3 font-mono text-slate-300">
+                                      <span className="sm:hidden text-[9px] font-mono text-stone-500 block uppercase font-bold">Mobile:</span>
+                                      <a href={`tel:${reg.phone}`} className="hover:text-gold transition-colors block">{reg.phone}</a>
+                                    </div>
+
+                                    <div className="sm:col-span-2 font-mono text-[10px] text-stone-500">
+                                      <span className="sm:hidden text-[9px] font-mono text-stone-500 block uppercase font-bold">Date Registered:</span>
+                                      <span>{reg.timestamp}</span>
+                                    </div>
+
+                                    <div className="sm:col-span-1 flex justify-end sm:justify-center border-t sm:border-0 border-white/5 pt-2 sm:pt-0">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setConfirmModal({
+                                            isOpen: true,
+                                            title: "DELETE EVENT REGISTRATION RECORD",
+                                            description: `Verify purge of entry for "${reg.name}"? This action removes participant list clearance index locally.`,
+                                            actionLabel: "Evict entry",
+                                            severity: "danger",
+                                            onConfirm: () => {
+                                              deleteEventRegistration(reg.id);
+                                              setConfirmModal(null);
+                                            }
+                                          });
+                                        }}
+                                        className="p-1.5 rounded-lg text-rose-400 hover:text-rose-500 border border-white/5 bg-[#0D0D0D] hover:bg-[#1E1E1E] cursor-pointer transition-all shrink-0"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                ))}
+
+                              {eventRegistrations.length === 0 && (
+                                <div className="p-12 text-center text-gray-500 font-mono text-[10px] uppercase tracking-wider">
+                                  <Ticket className="w-6 h-6 text-stone-600 mx-auto opacity-35 mb-2" />
+                                  <p>No participant records logged currently on local ledger cache.</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="text-center pt-2">
+                            <span className="text-[8px] font-mono text-gray-600 uppercase tracking-widest block">
+                              SECURE PARTICIPANT REGISTRY LOGS • VERIFIED BY SYSTEM AUDIT LAYER
+                            </span>
+                          </div>
+
+                        </div>
+                      </div>
+                    )}
+
+                    {/* TAB PANEL 7: Activity Logs & Audit Trails */}
                     {activeTab === "logs" && (
                       <div className="space-y-6" id="admin-activity-logs-panel">
                         <div className="bg-[#141414] border border-white/5 rounded-2xl p-6 shadow-xl space-y-6">
