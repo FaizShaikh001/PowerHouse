@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useGymData } from "../context/GymDataContext";
 import { loadGymData } from "../utils/gymDataStore";
-import { Lock, Unlock, LogOut, Settings2, Clock, DollarSign, RefreshCw, X, Check, Save, Users, TrendingUp, Plus, Search, UserPlus, Trash2, ShieldCheck, Key, HelpCircle, Activity, Eye, EyeOff, Calendar, Ticket, Image, FileText } from "lucide-react";
+import { Lock, Unlock, LogOut, Settings2, Clock, DollarSign, RefreshCw, X, Check, Save, Users, TrendingUp, Plus, Search, UserPlus, Trash2, ShieldCheck, Key, HelpCircle, Activity, Eye, EyeOff, Calendar, Ticket, Image, FileText, Edit, Share2 } from "lucide-react";
 
 export default function AdminPanel() {
   const { 
@@ -24,6 +24,7 @@ export default function AdminPanel() {
     deleteMember,
     addEventPost,
     deleteEventPost,
+    editEventPost,
     toggleEventPostActive,
     deleteEventRegistration,
     adminLogin, 
@@ -48,6 +49,18 @@ export default function AdminPanel() {
   const [regSearchQuery, setRegSearchQuery] = useState("");
   const [eventSaveSuccess, setEventSaveSuccess] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
+
+  const handleCopyEventShareLink = (eventId: string) => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}#event-card-${eventId}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopiedEventId(eventId);
+      setTimeout(() => {
+        setCopiedEventId(null);
+      }, 2000);
+    });
+  };
 
   const handleImageUpload = (file: File) => {
     if (!file || !file.type.startsWith("image/")) {
@@ -188,16 +201,32 @@ export default function AdminPanel() {
        return;
     }
 
-    addEventPost({
-      title: newEventTitle.trim(),
-      description: newEventDescription.trim() || "No detailed description compiled.",
-      date: newEventDate.trim(),
-      time: newEventTime.trim() || undefined,
-      location: newEventLocation.trim() || undefined,
-      image: newEventImage.trim() || "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=400&q=80",
-      registrationFormUrl: newEventGFormUrl.trim() || undefined,
-      gmailReceiver: "shaikhfaizsadiq@gmail.com"
-    });
+    if (editingEventId) {
+      const existing = eventPosts.find((ev: any) => ev.id === editingEventId);
+      editEventPost({
+        id: editingEventId,
+        title: newEventTitle.trim(),
+        description: newEventDescription.trim() || "No detailed description compiled.",
+        date: newEventDate.trim(),
+        time: newEventTime.trim() || undefined,
+        location: newEventLocation.trim() || undefined,
+        image: newEventImage.trim() || "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=400&q=80",
+        registrationFormUrl: newEventGFormUrl.trim() || undefined,
+        isActive: existing ? existing.isActive : true
+      });
+      setEditingEventId(null);
+    } else {
+      addEventPost({
+        title: newEventTitle.trim(),
+        description: newEventDescription.trim() || "No detailed description compiled.",
+        date: newEventDate.trim(),
+        time: newEventTime.trim() || undefined,
+        location: newEventLocation.trim() || undefined,
+        image: newEventImage.trim() || "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=400&q=80",
+        registrationFormUrl: newEventGFormUrl.trim() || undefined,
+        gmailReceiver: "shaikhfaizsadiq@gmail.com"
+      });
+    }
 
     // Reset Form
     setNewEventTitle("");
@@ -1299,10 +1328,12 @@ export default function AdminPanel() {
                           <div className="lg:col-span-5 bg-zinc-900/40 border border-white/5 rounded-2xl p-6 space-y-4">
                             <h3 className="font-bebas text-lg text-white tracking-widest uppercase flex items-center gap-2">
                               <Calendar className="w-5 h-5 text-gold animate-pulse" />
-                              <span>BROADCAST NEW EVENT</span>
+                              <span>{editingEventId ? "EDIT CURRENT EVENT" : "BROADCAST NEW EVENT"}</span>
                             </h3>
                             <p className="text-[10px] font-sans text-gray-500 leading-normal">
-                              Publish official banners, biomechanics masterclasses, or challenge forms to the public gym events feed.
+                              {editingEventId 
+                                ? "Update event attributes, change the uploaded flyer flyer, or tweak Google Form paths."
+                                : "Publish official banners, biomechanics masterclasses, or challenge forms to the public gym events feed."}
                             </p>
 
                             <form onSubmit={handlePostEvent} className="space-y-4 pt-2">
@@ -1491,11 +1522,35 @@ export default function AdminPanel() {
 
                               <button
                                 type="submit"
-                                className="w-full bg-gold hover:bg-gold-light text-black py-3 rounded-lg text-xs uppercase tracking-widest font-black cursor-pointer transition-all shadow-md mt-2 flex items-center justify-center gap-1.5"
+                                className={`w-full py-3 rounded-lg text-xs uppercase tracking-widest font-black cursor-pointer transition-all shadow-md mt-2 flex items-center justify-center gap-1.5 ${
+                                  editingEventId 
+                                    ? "bg-emerald-500 hover:bg-emerald-400 text-black shadow-emerald-500/10" 
+                                    : "bg-gold hover:bg-gold-light text-black shadow-gold/10"
+                                }`}
                               >
-                                <Plus className="w-4 h-4 shrink-0" />
-                                <span>Publish Active Poster</span>
+                                {editingEventId ? <Check className="w-4 h-4 shrink-0" /> : <Plus className="w-4 h-4 shrink-0" />}
+                                <span>{editingEventId ? "Save Flyer Edits" : "Publish Active Poster"}</span>
                               </button>
+
+                              {editingEventId && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingEventId(null);
+                                    setNewEventTitle("");
+                                    setNewEventDescription("");
+                                    setNewEventDate("");
+                                    setNewEventTime("");
+                                    setNewEventLocation("");
+                                    setNewEventImage("");
+                                    setNewEventGFormUrl("");
+                                  }}
+                                  className="w-full mt-2 bg-zinc-800 hover:bg-zinc-705 text-stone-300 py-2 rounded-lg text-[10px] uppercase tracking-widest font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 border border-white/5"
+                                >
+                                  <X className="w-3.5 h-3.5 shrink-0" />
+                                  <span>Discard & Create New</span>
+                                </button>
+                              )}
                             </form>
                           </div>
 
@@ -1543,14 +1598,52 @@ export default function AdminPanel() {
                                         <button
                                           type="button"
                                           onClick={() => toggleEventPostActive(ev.id)}
-                                          title="Toggle Active Broadcast"
-                                          className={`px-2 py-1 rounded text-[8px] font-mono tracking-widest uppercase transition-all border cursor-pointer ${
+                                          title="Toggle Broadcast Status (Draft/Live)"
+                                          className={`px-2.5 py-1 rounded-full text-[8.5px] font-mono tracking-widest uppercase transition-all duration-300 border cursor-pointer font-bold flex items-center gap-1 ${
                                             ev.isActive
-                                              ? "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"
-                                              : "bg-stone-500/10 text-stone-400 border-stone-500/20 hover:bg-stone-500/20"
+                                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
+                                              : "bg-[#222]/80 text-[#888] border-white/5 hover:bg-[#2c2c2e]"
                                           }`}
                                         >
-                                          {ev.isActive ? "Active" : "Paused"}
+                                          <span className={`w-1.2 h-1.2 rounded-full ${ev.isActive ? "bg-emerald-400 animate-pulse" : "bg-[#888]"}`} />
+                                          <span>{ev.isActive ? "LIVE" : "DRAFT"}</span>
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleCopyEventShareLink(ev.id)}
+                                          title="Copy Public Share Link"
+                                          className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                                            copiedEventId === ev.id
+                                              ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                                              : "text-zinc-400 hover:text-gold border-white/5 bg-[#0D0D0D] hover:bg-[#1E1E1E]"
+                                          }`}
+                                        >
+                                          {copiedEventId === ev.id ? (
+                                            <Check className="w-3.5 h-3.5" />
+                                          ) : (
+                                            <Share2 className="w-3.5 h-3.5" />
+                                          )}
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setEditingEventId(ev.id);
+                                            setNewEventTitle(ev.title);
+                                            setNewEventDescription(ev.description || "");
+                                            setNewEventDate(ev.date);
+                                            setNewEventTime(ev.time || "");
+                                            setNewEventLocation(ev.location || "");
+                                            setNewEventImage(ev.image || "");
+                                            setNewEventGFormUrl(ev.registrationFormUrl || "");
+                                          }}
+                                          title="Edit Event Poster Content"
+                                          className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                                            editingEventId === ev.id 
+                                              ? "text-[#0A0A0A] bg-gold border-gold" 
+                                              : "text-gold hover:text-gold-light border-white/5 bg-[#0D0D0D] hover:bg-[#1E1E1E]"
+                                          }`}
+                                        >
+                                          <Edit className="w-3.5 h-3.5" />
                                         </button>
                                         <button
                                           type="button"
@@ -1563,6 +1656,16 @@ export default function AdminPanel() {
                                               severity: "danger",
                                               onConfirm: () => {
                                                 deleteEventPost(ev.id);
+                                                if (editingEventId === ev.id) {
+                                                  setEditingEventId(null);
+                                                  setNewEventTitle("");
+                                                  setNewEventDescription("");
+                                                  setNewEventDate("");
+                                                  setNewEventTime("");
+                                                  setNewEventLocation("");
+                                                  setNewEventImage("");
+                                                  setNewEventGFormUrl("");
+                                                }
                                                 setConfirmModal(null);
                                               }
                                             });

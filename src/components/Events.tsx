@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
-import { Calendar, Clock, MapPin, Sparkles, ExternalLink } from "lucide-react";
+import { Calendar, Clock, MapPin, Sparkles, ExternalLink, Share2, Check } from "lucide-react";
 import { useGymData } from "../context/GymDataContext";
 import { useTranslation } from "../context/LanguageContext";
 
 export default function Events() {
   const { eventPosts } = useGymData();
   const { t } = useTranslation();
+
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyLink = (eventId: string) => {
+    // Construct link like current origin + path + hash of event element
+    const shareUrl = `${window.location.origin}${window.location.pathname}#event-card-${eventId}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopiedId(eventId);
+      setTimeout(() => {
+        setCopiedId(null);
+      }, 2000);
+    });
+  };
 
   const activeEvents = (eventPosts || []).filter(e => e.isActive);
 
@@ -69,7 +82,7 @@ export default function Events() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative bg-[#0C0C0C] border border-white/5 hover:border-gold/30 rounded-2xl overflow-hidden transition-all duration-500 shadow-xl flex flex-col md:flex-row h-full"
+                className="group relative bg-[#0C0C0C] border border-white/5 hover:border-gold/30 rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02] shadow-xl flex flex-col md:flex-row h-full"
                 id={`event-card-${event.id}`}
               >
                 {/* Poster Element with Zoom Reflex */}
@@ -92,9 +105,32 @@ export default function Events() {
                 {/* Info and action panel */}
                 <div className="p-6 md:p-8 md:w-3/5 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-xl font-sans font-bold text-white tracking-tight group-hover:text-gold transition-colors duration-300">
-                      {event.title}
-                    </h3>
+                    <div className="flex justify-between items-start gap-3 mb-2">
+                      <h3 className="text-xl font-sans font-bold text-white tracking-tight group-hover:text-gold transition-colors duration-300">
+                        {event.title}
+                      </h3>
+                      <button
+                        onClick={() => handleCopyLink(event.id)}
+                        className={`p-1.5 rounded-lg border transition-all duration-300 cursor-pointer text-xs flex items-center justify-center gap-1 shrink-0 ${
+                          copiedId === event.id
+                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            : "bg-white/5 text-stone-400 border-white/5 hover:text-gold hover:border-gold/30 hover:bg-white/10"
+                        }`}
+                        title="Copy Share Link to Clipboard"
+                      >
+                        {copiedId === event.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            <span className="text-[9px] font-mono tracking-wider font-extrabold text-emerald-400">COPIED</span>
+                          </>
+                        ) : (
+                          <>
+                            <Share2 className="w-3 h-3" />
+                            <span className="text-[9px] font-mono tracking-wider font-medium">SHARE</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                     
                     {/* Time details */}
                     <div className="flex flex-wrap gap-y-2 gap-x-4 mt-3 text-xs font-mono text-gray-400">

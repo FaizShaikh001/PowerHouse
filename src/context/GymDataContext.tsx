@@ -32,6 +32,7 @@ interface GymDataContextProps {
   deleteMember: (id: string) => void;
   addEventPost: (event: Omit<EventPost, "id" | "isActive">) => void;
   deleteEventPost: (id: string) => void;
+  editEventPost: (event: EventPost) => void;
   toggleEventPostActive: (id: string) => void;
   addEventRegistration: (reg: Omit<EventRegistration, "id" | "timestamp">) => Promise<boolean>;
   deleteEventRegistration: (id: string) => void;
@@ -316,6 +317,18 @@ export const GymDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
     addLog("Deleted Event Poster", `Removed event poster index for "${title}".`);
   };
 
+  const editEventPost = (event: EventPost) => {
+    setData((prev) => {
+      const newItems = (prev.eventPosts || []).map((item) => 
+        item.id === event.id ? event : item
+      );
+      const next = { ...prev, eventPosts: newItems };
+      saveGymData(next);
+      return next;
+    });
+    addLog("Edited Event Poster", `Updated event details and assets for "${event.title}".`);
+  };
+
   const toggleEventPostActive = (id: string) => {
     let title = id;
     let nextState = false;
@@ -453,6 +466,7 @@ export const GymDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
         deleteMember,
         addEventPost,
         deleteEventPost,
+        editEventPost,
         toggleEventPostActive,
         addEventRegistration,
         deleteEventRegistration,
