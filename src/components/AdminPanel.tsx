@@ -135,6 +135,23 @@ export default function AdminPanel() {
     onConfirm: () => void;
   } | null>(null);
 
+  // Warning prompt before closing the tab/window if the administrator forgot to log out
+  React.useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isAdmin) {
+        const warningMessage = "You are currently logged in to the PowerHouse Admin Panel. Please ensure you log out to secure the database before leaving.";
+        e.preventDefault();
+        e.returnValue = warningMessage;
+        return warningMessage;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isAdmin]);
+
   // Synchronize dynamic values on modal open
   const handleOpen = () => {
     setIsOpen(true);
